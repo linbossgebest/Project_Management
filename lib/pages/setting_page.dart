@@ -21,30 +21,8 @@ class _SettingPageState extends State<SettingPage> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           ListTile(
-            leading: Icon(Icons.message),
-            title: Text("设置1"),
-          ),
-          Divider(
-            height: ScreenUtil().setHeight(10),
-            color: Colors.grey,
-          ),
-          ListTile(
-            leading: Icon(Icons.message),
-            title: Text("设置2"),
-          ),
-          Divider(
-            height: ScreenUtil().setHeight(10),
-            color: Colors.grey,
-          ),
-          Container(
-            child: InkWell(
-              onTap: () {
-              },
-              child: ListTile(
-                leading: Icon(Icons.person_outline),
-                title: Text("退出"),
-              ),
-            ),
+            leading: Icon(Icons.security),
+            title: Text("修改密码"),
           ),
           Divider(
             height: ScreenUtil().setHeight(10),

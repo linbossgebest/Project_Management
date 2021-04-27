@@ -1,6 +1,9 @@
 import 'package:fluro/fluro.dart';
 import 'package:flutter/material.dart';
 import 'package:thzz_project_management/pages/about_us_page.dart';
+import 'package:thzz_project_management/pages/component_query_detail_comment_page.dart';
+import 'package:thzz_project_management/pages/component_query_detail_page.dart';
+import 'package:thzz_project_management/pages/history_operate_page.dart';
 import 'package:thzz_project_management/pages/loading_page.dart';
 import 'package:thzz_project_management/pages/login_page.dart';
 import 'package:thzz_project_management/pages/progress_report_page.dart';
@@ -55,5 +58,23 @@ Handler progressReportHandler=Handler(
 Handler settingHandler=Handler(
   handlerFunc: (BuildContext context, Map<String, List<String>> parameters) {
     return SettingPage();
+  },
+);
+
+Handler historyOperateHandler=Handler(
+  handlerFunc: (BuildContext context, Map<String, List<String>> parameters) {
+    return HistoryOperatePage();
+  },
+);
+
+Handler componentQueryDetailHandler=Handler(
+  handlerFunc: (BuildContext context, Map<String, List<String>> parameters) {
+    return ComponentQueryDetailPage();
+  },
+);
+
+Handler componentQueryDetailCommentHandler=Handler(
+  handlerFunc: (BuildContext context, Map<String, List<String>> parameters) {
+    return ComponentQueryDetailCommentPage();
   },
 );

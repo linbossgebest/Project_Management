@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/screenutil.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
+import 'package:thzz_project_management/pages/productionschedule_page.dart';
 import 'package:thzz_project_management/routers/application.dart';
 
 class HomePage extends StatefulWidget {
@@ -75,13 +76,12 @@ class _HomePageState extends State<HomePage> {
                     )),
               ),
               Container(
+                color: Colors.white,
                 width: ScreenUtil().setWidth(730),
-                margin: EdgeInsets.fromLTRB(10, 0, 10, 10),
-                //padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
-                child: Text(
-                  "功能模块:",
-                  style: TextStyle(fontSize: ScreenUtil().setSp(34)),
-                ),
+                height: ScreenUtil().setHeight(500),
+                margin: EdgeInsets.fromLTRB(10, 10, 10, 10),
+                padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
+                child: ProductionSchedulePage(),
               )
             ],
           )),

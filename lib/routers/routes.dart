@@ -16,6 +16,10 @@ class Routes {
   static String myProjectPage = "/myProject";
   static String progressReportPage = "/progressReport";
   static String settingPage = "/setting";
+  static String historyOperatePage = "/historyOperate";
+  static String componentQueryDetailPage = "/componentQueryDetail";
+  static String componentQueryDetailCommentPage =
+      "/componentQueryDetailComment";
 
   static void configureRoutes(FluroRouter router) {
     router.notFoundHandler = new Handler(
@@ -33,5 +37,10 @@ class Routes {
     router.define(myProjectPage, handler: myProjectHandler);
     router.define(progressReportPage, handler: progressReportHandler);
     router.define(settingPage, handler: settingHandler);
+    router.define(historyOperatePage, handler: historyOperateHandler);
+    router.define(componentQueryDetailPage,
+        handler: componentQueryDetailHandler);
+    router.define(componentQueryDetailCommentPage,
+        handler: componentQueryDetailCommentHandler);
   }
 }
