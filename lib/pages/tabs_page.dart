@@ -21,7 +21,7 @@ class Tabs extends StatelessWidget {
 
   HomePage homePage;
   ProcessReportPage processReportPage;
-  MyProjectPage myProjectPage; 
+  MyProjectPage myProjectPage;
   ComponentQueryPage componentQueryPage;
   ScanPage scanPage;
 
@@ -57,23 +57,25 @@ class Tabs extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    ScreenUtil.init(context, width: 750, height: 1334, allowFontScaling: false);
-    return Consumer<CurrentIndexProvide>(
-        builder: (context, currentIndexProvide, val) {
-      currentIndex = currentIndexProvide.currentIndex;
-      return Scaffold(
-        bottomNavigationBar: BottomNavigationBar(
-            backgroundColor: Colors.blue,
-            currentIndex: currentIndex,
-            iconSize: ScreenUtil().setSp(60),
-            fixedColor: Colors.white,
-            type: BottomNavigationBarType.fixed,
-            onTap: (int index) {
-              currentIndexProvide.changeIndex(index);
-            },
-            items: bottomTabs),
-        body: currentPage(),
-      );
-    });
+    return ScreenUtilInit(
+      designSize: Size(750, 1334),
+      builder: () => Consumer<CurrentIndexProvide>(
+          builder: (context, currentIndexProvide, val) {
+        currentIndex = currentIndexProvide.currentIndex;
+        return Scaffold(
+          bottomNavigationBar: BottomNavigationBar(
+              backgroundColor: Colors.blue,
+              currentIndex: currentIndex,
+              iconSize: ScreenUtil().setSp(60),
+              fixedColor: Colors.white,
+              type: BottomNavigationBarType.fixed,
+              onTap: (int index) {
+                currentIndexProvide.changeIndex(index);
+              },
+              items: bottomTabs),
+          body: currentPage(),
+        );
+      }),
+    );
   }
 }

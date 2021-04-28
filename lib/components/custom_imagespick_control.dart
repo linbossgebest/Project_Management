@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class CustomImagesPickControl extends StatefulWidget {
   CustomImagesPickControl({Key key}) : super(key: key);
@@ -33,10 +34,13 @@ class _CustomImagesPickControlState extends State<CustomImagesPickControl> {
 
   Future<void> loadAssets() async {
     List<Asset> resultList = <Asset>[];
+    var status = await Permission.camera.request();
+
+    print(status);
 
     try {
       resultList = await MultiImagePicker.pickImages(
-        maxImages: 300,
+        maxImages: 20,
         enableCamera: true,
         selectedAssets: images,
         cupertinoOptions: CupertinoOptions(takePhotoIcon: "chat"),
@@ -46,13 +50,11 @@ class _CustomImagesPickControlState extends State<CustomImagesPickControl> {
           allViewTitle: "所有照片",
           useDetailsView: false,
           selectCircleStrokeColor: "#000000",
-           //未选择图片时提示
-          textOnNothingSelected:'没有选择照片',
-
+          //未选择图片时提示
+          textOnNothingSelected: '没有选择照片',
         ),
       );
-    }on Exception catch (e) {
-    }
+    } on Exception catch (e) {}
 
     // If the widget was removed from the tree while the asynchronous platform
     // message was in flight, we want to discard the reply rather than calling
@@ -79,7 +81,7 @@ class _CustomImagesPickControlState extends State<CustomImagesPickControl> {
         children: <Widget>[
           RaisedButton.icon(
             textColor: Colors.white,
-                  color: Colors.blue[500],
+            color: Colors.blue[500],
             icon: Icon(Icons.add),
             label: Text('添加现场照片'),
             onPressed: loadAssets,

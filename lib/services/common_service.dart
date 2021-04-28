@@ -9,7 +9,7 @@ get(String url, {Map<String, dynamic> queryParameters}) async {
     // print(queryParameters["token"]);
     if (queryParameters["token"] == null) {
       Toast.show("token已失效,请重新登录！");
-      Routes.navigatorKey.currentState.pushNamed("/login");
+      Routes.navigatorKey.currentState?.pushNamed("/login");
     } else {
       var dio = Dio();
 
@@ -18,7 +18,7 @@ get(String url, {Map<String, dynamic> queryParameters}) async {
         ReturnModel returnModel = ReturnModel.fromJson(response.data);
         if (returnModel.type == 3 && returnModel.message.contains("token")) {
           Toast.show(returnModel.message + "请重新登录！");
-          Routes.navigatorKey.currentState.pushNamed("/login");
+          Routes.navigatorKey.currentState?.pushNamed("/login");
         } else if (returnModel.type == 1) {
           return response;
         } else {

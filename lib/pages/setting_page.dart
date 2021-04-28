@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/screenutil.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class SettingPage extends StatefulWidget {
   SettingPage({Key key}) : super(key: key);
@@ -11,25 +11,26 @@ class SettingPage extends StatefulWidget {
 class _SettingPageState extends State<SettingPage> {
   @override
   Widget build(BuildContext context) {
-    //屏幕适配
-    ScreenUtil.init(context, width: 750, height: 1334, allowFontScaling: false);
-    return Scaffold(
-      appBar: AppBar(title: Text("设置")),
-      body: Container(
-          child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          ListTile(
-            leading: Icon(Icons.security),
-            title: Text("修改密码"),
-          ),
-          Divider(
-            height: ScreenUtil().setHeight(10),
-            color: Colors.grey,
-          ),
-        ],
-      )),
+    return ScreenUtilInit(
+      designSize: Size(750, 1334),
+      builder: () => Scaffold(
+        appBar: AppBar(title: Text("设置")),
+        body: Container(
+            child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            ListTile(
+              leading: Icon(Icons.security),
+              title: Text("修改密码"),
+            ),
+            Divider(
+              height: ScreenUtil().setHeight(10),
+              color: Colors.grey,
+            ),
+          ],
+        )),
+      ),
     );
   }
 }

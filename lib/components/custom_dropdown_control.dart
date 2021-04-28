@@ -19,7 +19,7 @@ class _CustomDropDownControlState extends State<CustomDropDownControl> {
   void initState() {
     super.initState();
 
-    controlItems = new List<String>();
+    controlItems = [];
 
     //模拟数据
     controlItems.add("value1");

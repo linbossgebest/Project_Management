@@ -10,11 +10,7 @@ class PhotoViewGalleryScreen extends StatefulWidget {
   PageController controller;
 
   PhotoViewGalleryScreen(
-      {Key key,
-      @required this.images,
-      this.index,
-      this.controller,
-      this.heroTag})
+      {Key key, this.images, this.index, this.controller, this.heroTag})
       : super(key: key) {
     controller = PageController(initialPage: index);
   }
@@ -48,14 +44,15 @@ class _PhotoViewGalleryScreenState extends State<PhotoViewGalleryScreen> {
               builder: (BuildContext context, int index) {
                 return PhotoViewGalleryPageOptions(
                   //imageProvider: NetworkImage(widget.images[index]),//使用网络图片地址
-                  imageProvider: AssetImage(widget.images[index]),//使用本地图片地址
+                  imageProvider: AssetImage(widget.images[index]), //使用本地图片地址
                   heroAttributes: widget.heroTag.isNotEmpty
                       ? PhotoViewHeroAttributes(tag: widget.heroTag)
-                      : "dafault",//null会报错
+                      : PhotoViewHeroAttributes(
+                          tag: "widget.heroTag"), //null会报错
                 );
               },
               itemCount: widget.images.length,
-              loadingChild: Container(),
+              //loadingChild: Container(),
               backgroundDecoration: null,
               pageController: widget.controller,
               enableRotation: true,

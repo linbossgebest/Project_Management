@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/screenutil.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:thzz_project_management/models/return_model.dart';
 import 'package:thzz_project_management/routers/application.dart';
 import 'package:thzz_project_management/services/login_service.dart';
@@ -83,27 +83,28 @@ class _LoginPageState extends State<LoginPage> {
     return null;
   }
 
-@override
+  @override
   Widget build(BuildContext context) {
-    //屏幕适配
-    ScreenUtil.init(context, width: 750, height: 1334, allowFontScaling: false);
-    return Scaffold(
-        appBar: AppBar(
-          title: Text("用户登录"),
-          automaticallyImplyLeading: false, //设置没有返回按钮
-        ),
-        body: SingleChildScrollView(
-          child: GestureDetector(
-            onTap: () {
-              _focusNodeUserName.unfocus();
-              _focusNodePassWord.unfocus();
-            },
-            child: Column(children: <Widget>[
-              inputTextArea(context),
-              loginArea(context),
-            ]),
+    return ScreenUtilInit(
+      designSize: Size(750, 1334),
+      builder: () => Scaffold(
+          appBar: AppBar(
+            title: Text("用户登录"),
+            automaticallyImplyLeading: false, //设置没有返回按钮
           ),
-        ));
+          body: SingleChildScrollView(
+            child: GestureDetector(
+              onTap: () {
+                _focusNodeUserName.unfocus();
+                _focusNodePassWord.unfocus();
+              },
+              child: Column(children: <Widget>[
+                inputTextArea(context),
+                loginArea(context),
+              ]),
+            ),
+          )),
+    );
   }
 
   //输入文本框区域
@@ -206,8 +207,7 @@ class _LoginPageState extends State<LoginPage> {
                         _showMessageDialog(returnModel.message);
                       } else if (returnModel.type == 1) {
                         var token = returnModel.resultdata["token"];
-                        Application.router
-                                .navigateTo(context, "/tabs");
+                        Application.router.navigateTo(context, "/tabs");
                       }
                     });
                   }
