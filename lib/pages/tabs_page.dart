@@ -11,12 +11,11 @@ import 'package:thzz_project_management/pages/my_project_page.dart';
 class Tabs extends StatelessWidget {
   int currentIndex = 0;
   final List<BottomNavigationBarItem> bottomTabs = [
-    BottomNavigationBarItem(icon: Icon(Icons.home), title: Text("主页")),
-    BottomNavigationBarItem(icon: Icon(Icons.assignment), title: Text("进度填报")),
-    BottomNavigationBarItem(
-        icon: Icon(Icons.developer_board), title: Text("我的项目")),
-    BottomNavigationBarItem(icon: Icon(Icons.search), title: Text("构件查看")),
-    BottomNavigationBarItem(icon: Icon(Icons.crop_free), title: Text("扫码")),
+    BottomNavigationBarItem(icon: Icon(Icons.home), label: "主页"),
+    BottomNavigationBarItem(icon: Icon(Icons.assignment), label: "进度填报"),
+    BottomNavigationBarItem(icon: Icon(Icons.crop_free), label: "扫码"),
+    BottomNavigationBarItem(icon: Icon(Icons.search), label: "构件查看"),
+    BottomNavigationBarItem(icon: Icon(Icons.developer_board), label: "我的项目"),
   ];
 
   HomePage homePage;
@@ -39,8 +38,8 @@ class Tabs extends StatelessWidget {
         }
       case 2:
         {
-          myProjectPage = MyProjectPage();
-          return myProjectPage;
+          scanPage = ScanPage();
+          return scanPage;
         }
       case 3:
         {
@@ -49,8 +48,8 @@ class Tabs extends StatelessWidget {
         }
       case 4:
         {
-          scanPage = ScanPage();
-          return scanPage;
+          myProjectPage = MyProjectPage();
+          return myProjectPage;
         }
     }
   }

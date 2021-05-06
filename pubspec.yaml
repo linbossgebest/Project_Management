@@ -63,7 +63,8 @@ flutter:
     - lib/images/swip3.jpg
     - lib/images/swip4.jpg
     - lib/images/swip5.jpg
-
+    - lib/images/icon.jpg
+    - lib/images/logo.png
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
 

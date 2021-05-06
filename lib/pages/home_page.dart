@@ -36,9 +36,10 @@ class _HomePageState extends State<HomePage> {
                     left: ScreenUtil().setSp(20),
                     top: ScreenUtil().setSp(20),
                     child: Image.asset(
-                      "lib/images/scan.png",
-                      height: ScreenUtil().setHeight(60),
-                      width: ScreenUtil().setWidth(60),
+                      "lib/images/icon.jpg",
+                      fit: BoxFit.fill,
+                      height: ScreenUtil().setHeight(80),
+                      width: ScreenUtil().setWidth(80),
                     ),
                   )
                 ],
