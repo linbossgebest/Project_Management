@@ -15,7 +15,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     //测试数据
-    var swiperImagelist = new List();
+    var swiperImagelist = [];
     swiperImagelist.add("lib/images/swip1.jpg");
     swiperImagelist.add("lib/images/swip2.jpg");
     swiperImagelist.add("lib/images/swip3.jpg");
