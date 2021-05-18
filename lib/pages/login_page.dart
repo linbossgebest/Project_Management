@@ -1,8 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:provider/provider.dart';
 import 'package:thzz_project_management/models/return_model.dart';
+import 'package:thzz_project_management/models/swiperimage_model.dart';
+import 'package:thzz_project_management/models/userinfo_model.dart';
+import 'package:thzz_project_management/provide/swiperimagelist_provide.dart';
 import 'package:thzz_project_management/routers/application.dart';
+import 'package:thzz_project_management/services/getswiperimages_service.dart';
 import 'package:thzz_project_management/services/login_service.dart';
+import 'package:thzz_project_management/untils/common.dart';
 
 class LoginPage extends StatefulWidget {
   LoginPage({Key key}) : super(key: key);
@@ -22,6 +28,9 @@ class _LoginPageState extends State<LoginPage> {
 
   //表单状态
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+  //轮播图列表
+  SwiperImageListModel swiperImageList = SwiperImageListModel([]);
 
   var _username = ""; //用户名
   var _password = ""; //密码
@@ -206,8 +215,34 @@ class _LoginPageState extends State<LoginPage> {
                         //3失败 2警告
                         _showMessageDialog(returnModel.message);
                       } else if (returnModel.type == 1) {
-                        var token = returnModel.resultdata["token"];
-                        Application.router.navigateTo(context, "/tabs");
+                        var userInfo =
+                            UserInfoModel.fromJson(returnModel.resultdata);
+                        var token = userInfo.token; //签名
+                        var userRealName = userInfo.realName; //用户真实姓名
+                        var userIcon = userInfo.headIcon; //用户图标
+
+                        //登录成功查询轮播图list
+                        querySwiperImageList(token).then((value) {
+                          var resultData = value.data["resultdata"];
+                          if (resultData != null) {
+                            var data =
+                                SwiperImageListModel.fromJson(resultData);
+                            swiperImageList = data;
+                            Provider.of<SwiperImageListProvide>(context,
+                                    listen: false)
+                                .getImageList(swiperImageList.data);
+
+                            //本地持久化
+                            addSharedPreferences("username", _username);
+                            addSharedPreferences("userrealname", userRealName);
+                            addSharedPreferences("token", token);
+                            addSharedPreferences("usericon", userIcon);
+                            print(returnModel.resultdata["token"]);
+
+                            return Application.router
+                                .navigateTo(context, "/tabs");//路由跳转
+                          }
+                        });
                       }
                     });
                   }
