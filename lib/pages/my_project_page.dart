@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:provider/provider.dart';
+import 'package:thzz_project_management/models/logrecord_model.dart';
+import 'package:thzz_project_management/provide/logrecordlist_provide.dart';
 import 'package:thzz_project_management/routers/application.dart';
+import 'package:thzz_project_management/services/user_service.dart';
+import 'package:thzz_project_management/untils/common.dart';
 
 class MyProjectPage extends StatefulWidget {
   MyProjectPage({Key key}) : super(key: key);
@@ -10,6 +15,8 @@ class MyProjectPage extends StatefulWidget {
 }
 
 class _MyProjectPageState extends State<MyProjectPage> {
+  LogRecordListModel logRecordList = LogRecordListModel([]);
+
   @override
   Widget build(BuildContext context) {
     return ScreenUtilInit(
@@ -59,6 +66,19 @@ class _MyProjectPageState extends State<MyProjectPage> {
             Container(
               child: InkWell(
                 onTap: () {
+                  querySharedPerferences("token").then((token) => {
+                        userGetLogRecord(token).then((value) {
+                          var resultData = value.data["resultdata"];
+                          if (resultData != null) {
+                            var data = LogRecordListModel.fromJson(resultData);
+                            logRecordList = data;
+                            Provider.of<LogRecordListProvide>(context,
+                                    listen: false)
+                                .setLogRecordList(logRecordList.data);
+                          }
+                        })
+                      });
+
                   return Application.router
                       .navigateTo(context, "/historyOperate");
                 },
@@ -81,7 +101,13 @@ class _MyProjectPageState extends State<MyProjectPage> {
                 child: ListTile(
                   leading: Icon(Icons.info),
                   title: Text("关于我们"),
-                  trailing: Icon(Icons.keyboard_arrow_right),
+                  trailing:InkWell(
+                    child:   Icon(Icons.keyboard_arrow_right),
+                    onTap: (){
+                        return Application.router.navigateTo(context, "/aboutUs");
+                    },
+                  )
+                
                 ),
               ),
             ),
@@ -97,7 +123,7 @@ class _MyProjectPageState extends State<MyProjectPage> {
                 child: ListTile(
                   leading: Icon(Icons.settings),
                   title: Text("设置"),
-                  trailing: Icon(Icons.keyboard_arrow_right),
+                  trailing:Icon(Icons.keyboard_arrow_right),
                 ),
               ),
             ),
@@ -128,8 +154,11 @@ class _MyProjectPageState extends State<MyProjectPage> {
                                 child: Text("取消")),
                             MaterialButton(
                                 onPressed: () {
-                                  // removeSharedPreferences("username");
-                                  // removeSharedPreferences("token");
+                                  ///移除本地缓存
+                                  removeSharedPreferences("username");
+                                  removeSharedPreferences("userrealname");
+                                  removeSharedPreferences("token");
+                                  removeSharedPreferences("usericon");
                                   return Application.router
                                       .navigateTo(context, "/login");
                                 },

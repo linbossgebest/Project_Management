@@ -7,7 +7,7 @@ import 'package:thzz_project_management/models/userinfo_model.dart';
 import 'package:thzz_project_management/provide/swiperimagelist_provide.dart';
 import 'package:thzz_project_management/routers/application.dart';
 import 'package:thzz_project_management/services/getswiperimages_service.dart';
-import 'package:thzz_project_management/services/login_service.dart';
+import 'package:thzz_project_management/services/user_service.dart';
 import 'package:thzz_project_management/untils/common.dart';
 
 class LoginPage extends StatefulWidget {
@@ -230,7 +230,7 @@ class _LoginPageState extends State<LoginPage> {
                             swiperImageList = data;
                             Provider.of<SwiperImageListProvide>(context,
                                     listen: false)
-                                .getImageList(swiperImageList.data);
+                                .setImageList(swiperImageList.data);
 
                             //本地持久化
                             addSharedPreferences("username", _username);

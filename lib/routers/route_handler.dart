@@ -1,6 +1,7 @@
 import 'package:fluro/fluro.dart';
 import 'package:flutter/material.dart';
 import 'package:thzz_project_management/pages/about_us_page.dart';
+import 'package:thzz_project_management/pages/changepwd_page.dart';
 import 'package:thzz_project_management/pages/component_query_detail_comment_page.dart';
 import 'package:thzz_project_management/pages/component_query_detail_page.dart';
 import 'package:thzz_project_management/pages/history_operate_page.dart';
@@ -76,5 +77,11 @@ Handler componentQueryDetailHandler=Handler(
 Handler componentQueryDetailCommentHandler=Handler(
   handlerFunc: (BuildContext context, Map<String, List<String>> parameters) {
     return ComponentQueryDetailCommentPage();
+  },
+);
+
+Handler changePwdHandler=Handler(
+  handlerFunc: (BuildContext context, Map<String, List<String>> parameters) {
+    return ChangePwdPage();
   },
 );

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
+import 'package:provider/provider.dart';
 import 'package:thzz_project_management/pages/productionschedule_page.dart';
+import 'package:thzz_project_management/provide/swiperimagelist_provide.dart';
 import 'package:thzz_project_management/routers/application.dart';
 
 class HomePage extends StatefulWidget {
@@ -15,12 +17,17 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     //测试数据
-    var swiperImagelist = [];
-    swiperImagelist.add("lib/images/swip1.jpg");
-    swiperImagelist.add("lib/images/swip2.jpg");
-    swiperImagelist.add("lib/images/swip3.jpg");
-    swiperImagelist.add("lib/images/swip4.jpg");
-    swiperImagelist.add("lib/images/swip5.jpg");
+    // var swiperImagelist = [];
+    // swiperImagelist.add("lib/images/swip1.jpg");
+    // swiperImagelist.add("lib/images/swip2.jpg");
+    // swiperImagelist.add("lib/images/swip3.jpg");
+    // swiperImagelist.add("lib/images/swip4.jpg");
+    // swiperImagelist.add("lib/images/swip5.jpg");
+
+ var swiperImagelist =
+        Provider.of<SwiperImageListProvide>(context, listen: false)
+            .swiperImageList
+            .data;
 
     return ScreenUtilInit(
       designSize: Size(750, 1334),
@@ -65,9 +72,9 @@ class _HomePageState extends State<HomePage> {
                         key: UniqueKey(),
                         //轮播图
                         itemBuilder: (BuildContext context, int index) {
-                          return Image.asset(
+                          return Image.network(
                             //获取图片
-                            swiperImagelist[index],
+                            swiperImagelist[index].filePath,
                             fit: BoxFit.fill,
                           );
                         },

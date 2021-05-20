@@ -5,7 +5,7 @@ import 'package:thzz_project_management/models/swiperimage_model.dart';
 class SwiperImageListProvide with ChangeNotifier {
   SwiperImageListModel swiperImageList = SwiperImageListModel([]);
 
-  getImageList(List list) {
+  setImageList(List list) {
     swiperImageList.data = list;
     notifyListeners();
   }

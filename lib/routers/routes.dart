@@ -20,6 +20,7 @@ class Routes {
   static String componentQueryDetailPage = "/componentQueryDetail";
   static String componentQueryDetailCommentPage =
       "/componentQueryDetailComment";
+  static String changePwdPage = "/changePwd";
 
   static void configureRoutes(FluroRouter router) {
     router.notFoundHandler = new Handler(
@@ -42,5 +43,6 @@ class Routes {
         handler: componentQueryDetailHandler);
     router.define(componentQueryDetailCommentPage,
         handler: componentQueryDetailCommentHandler);
+    router.define(changePwdPage, handler: changePwdHandler);
   }
 }
