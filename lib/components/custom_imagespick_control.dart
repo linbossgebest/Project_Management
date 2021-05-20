@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:provider/provider.dart';
+import 'package:thzz_project_management/provide/projectprogress_provide.dart';
 
 class CustomImagesPickControl extends StatefulWidget {
   CustomImagesPickControl({Key key}) : super(key: key);
@@ -63,6 +65,8 @@ class _CustomImagesPickControlState extends State<CustomImagesPickControl> {
 
     setState(() {
       images = resultList;
+      Provider.of<ProjectProgressProvide>(context, listen: false)
+          .setUploadImages(images);
     });
   }
 

@@ -77,42 +77,6 @@ class _ComponentQueryDetailCommentPageState
                   itemCount: photoList.length,
                 ),
               )
-              // Container(
-              //     child: Wrap(
-              //   children: <Widget>[
-              //     Container(
-              //         margin: EdgeInsets.all(5),
-              //         width: ScreenUtil().setWidth(330),
-              //         child: Image(
-              //           image: AssetImage("lib/images/swip1.jpg"),
-              //           fit: BoxFit.fill,
-              //         )),
-              //     Container(
-              //         margin: EdgeInsets.all(5),
-              //         width: ScreenUtil().setWidth(330),
-              //         child: Image(
-              //             image: AssetImage("lib/images/swip2.jpg"),
-              //             width: ScreenUtil().setWidth(220))),
-              //     Container(
-              //         margin: EdgeInsets.all(5),
-              //         width: ScreenUtil().setWidth(330),
-              //         child: Image(
-              //             image: AssetImage("lib/images/swip3.jpg"),
-              //             width: ScreenUtil().setWidth(220))),
-              //     Container(
-              //         margin: EdgeInsets.all(5),
-              //         width: ScreenUtil().setWidth(330),
-              //         child: Image(
-              //             image: AssetImage("lib/images/swip4.jpg"),
-              //             width: ScreenUtil().setWidth(220))),
-              //     Container(
-              //         margin: EdgeInsets.all(5),
-              //         width: ScreenUtil().setWidth(330),
-              //         child: Image(
-              //             image: AssetImage("lib/images/swip5.jpg"),
-              //             width: ScreenUtil().setWidth(220))),
-              //   ],
-              // )),
             ],
           ),
         ),

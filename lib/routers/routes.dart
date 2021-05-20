@@ -4,7 +4,7 @@ import 'package:thzz_project_management/pages/home_page.dart';
 import 'package:thzz_project_management/routers/route_handler.dart';
 
 class Routes {
-  static GlobalKey<NavigatorState> navigatorKey = GlobalKey();
+  static GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
   static String root = "/";
   static String loading = "/loading";

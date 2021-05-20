@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:thzz_project_management/models/return_model.dart';
+import 'package:thzz_project_management/routers/application.dart';
+import 'package:thzz_project_management/services/user_service.dart';
+import 'package:thzz_project_management/untils/common.dart';
 
 class ChangePwdPage extends StatefulWidget {
   ChangePwdPage({Key key}) : super(key: key);
@@ -18,7 +22,6 @@ class _ChangePwdPageState extends State<ChangePwdPage> {
 
   var _password = ""; //密码
   var _isShowPwd = false; //是否显示密码
-  var _isShowClear = false; //是否显示输入框尾部的清除按钮
 
   @override
   void initState() {
@@ -61,7 +64,6 @@ class _ChangePwdPageState extends State<ChangePwdPage> {
       builder: () => Scaffold(
           appBar: AppBar(
             title: Text("修改密码"),
-            automaticallyImplyLeading: false, //设置没有返回按钮
           ),
           body: SingleChildScrollView(
             child: GestureDetector(
@@ -142,7 +144,17 @@ class _ChangePwdPageState extends State<ChangePwdPage> {
           onPressed: () {
             _focusNodePassWord.unfocus();
             _formKey.currentState.save();
-            if (_formKey.currentState.validate()) {}
+            if (_formKey.currentState.validate()) {
+                querySharedPerferences("token").then((token) => {
+                  userRevisePassword(token,_password).then((value){
+                      var resultData = value.data["resultdata"];
+                      if (resultData != null) {
+                         return Application.router
+                                .navigateTo(context, "/login");//修改密码成功，路由跳转登录页面
+                      }
+                  })
+                });
+            }
           }),
     );
   }

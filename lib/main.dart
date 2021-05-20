@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:thzz_project_management/pages/home_page.dart';
 import 'package:thzz_project_management/provide/current_index.dart';
 import 'package:thzz_project_management/provide/logrecordlist_provide.dart';
+import 'package:thzz_project_management/provide/projectprogress_provide.dart';
 import 'package:thzz_project_management/provide/swiperimagelist_provide.dart';
 import 'pages/login_page.dart';
 import 'routers/application.dart';
@@ -17,6 +18,8 @@ class MyApp extends StatelessWidget {
   var currentIndex = CurrentIndexProvide(); //tab索引
   var swiperImageList = SwiperImageListProvide(); //轮播图片
   var logRecordList = LogRecordListProvide(); //历史操作
+  var projectProgress = ProjectProgressProvide(); //上传图片
+
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
@@ -35,6 +38,9 @@ class MyApp extends StatelessWidget {
         ),
         ChangeNotifierProvider(
           create: (_) => logRecordList,
+        ),
+        ChangeNotifierProvider(
+          create: (_) => projectProgress,
         ),
       ],
       child: MaterialApp(

@@ -3,7 +3,8 @@ import 'package:flutter/widgets.dart';
 
 class CustomDropDownControl extends StatefulWidget {
   final dynamic data;
-  CustomDropDownControl({Key key, this.data}) : super(key: key);
+  Function func;//传入方法
+  CustomDropDownControl({Key key, this.data,this.func}) : super(key: key);
 
   @override
   _CustomDropDownControlState createState() => _CustomDropDownControlState();
@@ -61,6 +62,9 @@ class _CustomDropDownControlState extends State<CustomDropDownControl> {
         onChanged: (String newValue) {
           setState(() {
             dropdownValue = newValue;
+            if(widget.func!=null){
+              widget.func(dropdownValue);//执行方法
+            } 
           });
         },
         items: _dropdownItems(),

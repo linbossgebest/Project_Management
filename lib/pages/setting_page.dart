@@ -17,11 +17,9 @@ class _SettingPageState extends State<SettingPage> {
       builder: () => Scaffold(
         appBar: AppBar(title: Text("设置")),
         body: Container(
-            child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.center,
+            child: ListView(
           children: [
-             Container(
+            Container(
               child: InkWell(
                 onTap: () {
                   return Application.router.navigateTo(context, "/changePwd");
@@ -29,24 +27,9 @@ class _SettingPageState extends State<SettingPage> {
                 child: ListTile(
                   leading: Icon(Icons.security),
                   title: Text("修改密码"),
-                  trailing:InkWell(
-                    child:   Icon(Icons.keyboard_arrow_right),
-                    onTap: (){
-                        return Application.router.navigateTo(context, "/aboutUs");
-                    },
-                  )
-                
                 ),
               ),
             ),
-            ListTile(
-                leading: Icon(Icons.security),
-                title: Text("修改密码"),
-                trailing: InkWell(
-                  onTap: () {
-                    return Application.router.navigateTo(context, "/changePwd");
-                  },
-                )),
             Divider(
               height: ScreenUtil().setHeight(10),
               color: Colors.grey,

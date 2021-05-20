@@ -16,8 +16,8 @@ get(String url, {Map<String, dynamic> queryParameters}) async {
       Response response = await dio.get(url, queryParameters: queryParameters);
       if (response.statusCode == 200) {
         ReturnModel returnModel = ReturnModel.fromJson(response.data);
-        if (returnModel.type == 3 && returnModel.message.contains("token")) {
-          Toast.show(returnModel.message + "请重新登录！");
+        if (returnModel.type == 3 || returnModel.message.contains("超时")) {
+          Toast.show(returnModel.message);
           Routes.navigatorKey.currentState?.pushNamed("/login");
         } else if (returnModel.type == 1) {
           return response;
@@ -35,15 +35,15 @@ get(String url, {Map<String, dynamic> queryParameters}) async {
 }
 
 //公共post方法
-post(String url, {Map<String, dynamic> data}) async {
+post(String url, {dynamic data}) async {
   try {
     var dio = Dio();
 
     Response response = await dio.post(url, data: data);
     if (response.statusCode == 200) {
       ReturnModel returnModel = ReturnModel.fromJson(response.data);
-      if (returnModel.type == 3 && returnModel.message.contains("token")) {
-        Toast.show(returnModel.message + "请重新登录！");
+      if (returnModel.type == 3 || returnModel.message.contains("超时")) {
+        Toast.show(returnModel.message);
         Routes.navigatorKey.currentState.pushNamed("/login");
       } else if (returnModel.type == 1) {
         Toast.show(returnModel.message);

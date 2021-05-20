@@ -15,7 +15,19 @@ class Config {
   static const String getSwiperImageListUrl =
       ipAddress + "/ProjectFile/GetImageHomeList";
 
+  //获取工程部位列表
+  static const String getWorkPositionListUrl =
+      ipAddress + "/ProjectFile/GetWorkPositionList";
+
+  //获取构件列表
+  static const String getComponentListUrl =
+      ipAddress + "/ProjectFile/GetComponentList";
+
   //获取项目现场上传图片信息
   static const String getProjectImageInfoUrl =
       ipAddress + "/ProjectFile/GetProjectImageInfo";
+
+  //进度填报和上传现场图片
+  static const String addProjectProgressoUrl =
+      ipAddress + "/ProjectFile/AddProjectProgress";
 }

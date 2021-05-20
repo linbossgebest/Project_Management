@@ -220,6 +220,8 @@ class _LoginPageState extends State<LoginPage> {
                         var token = userInfo.token; //签名
                         var userRealName = userInfo.realName; //用户真实姓名
                         var userIcon = userInfo.headIcon; //用户图标
+                        var projectName = userInfo.projectName; //项目名称
+                        var projectDescribe = userInfo.projectDescribe; //项目描述
 
                         //登录成功查询轮播图list
                         querySwiperImageList(token).then((value) {
@@ -237,10 +239,13 @@ class _LoginPageState extends State<LoginPage> {
                             addSharedPreferences("userrealname", userRealName);
                             addSharedPreferences("token", token);
                             addSharedPreferences("usericon", userIcon);
-                            print(returnModel.resultdata["token"]);
+                            addSharedPreferences("projectName", projectName);
+                            addSharedPreferences(
+                                "projectDescribe", projectDescribe);
+                            //print(returnModel.resultdata["token"]);
 
                             return Application.router
-                                .navigateTo(context, "/tabs");//路由跳转
+                                .navigateTo(context, "/tabs"); //路由跳转
                           }
                         });
                       }

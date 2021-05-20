@@ -16,6 +16,29 @@ class MyProjectPage extends StatefulWidget {
 
 class _MyProjectPageState extends State<MyProjectPage> {
   LogRecordListModel logRecordList = LogRecordListModel([]);
+  String username;
+  String usericon;
+  String projectName;
+  String projectDescribe;
+
+  @override
+  void initState() {
+    super.initState();
+    if (mounted) {
+      Future.delayed(
+          Duration.zero,
+          () => setState(() {
+                querySharedPerferences("username")
+                    .then((value) => username = value);
+                querySharedPerferences("usericon")
+                    .then((value) => usericon = value);
+                querySharedPerferences("projectName")
+                    .then((value) => projectName = value);
+                querySharedPerferences("projectDescribe")
+                    .then((value) => projectDescribe = value);
+              }));
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -34,9 +57,11 @@ class _MyProjectPageState extends State<MyProjectPage> {
               //color: Colors.blue,
               child: ListTile(
                 leading: ClipOval(
-                  child: Image.asset("lib/images/defaultuser.jpg"),
+                  child: usericon != null
+                      ? Image.network(usericon)
+                      : Image.asset("lib/images/defaultuser.jpg"),
                 ),
-                title: Text("用户名称:lin"),
+                title: Text("用户名称:" + "$username"),
               ),
               decoration: BoxDecoration(
                 color: Colors.blue[500],
@@ -51,11 +76,11 @@ class _MyProjectPageState extends State<MyProjectPage> {
               children: <Widget>[
                 ListTile(
                   title: Text('项目名称'),
-                  subtitle: Text('xxxxxx'),
+                  subtitle: Text('$projectName'),
                 ),
                 ListTile(
                   title: Text('项目简介'),
-                  subtitle: Text('xxxxxx'),
+                  subtitle: Text('$projectDescribe'),
                 ),
               ],
             )),
@@ -99,16 +124,15 @@ class _MyProjectPageState extends State<MyProjectPage> {
                   return Application.router.navigateTo(context, "/aboutUs");
                 },
                 child: ListTile(
-                  leading: Icon(Icons.info),
-                  title: Text("关于我们"),
-                  trailing:InkWell(
-                    child:   Icon(Icons.keyboard_arrow_right),
-                    onTap: (){
-                        return Application.router.navigateTo(context, "/aboutUs");
-                    },
-                  )
-                
-                ),
+                    leading: Icon(Icons.info),
+                    title: Text("关于我们"),
+                    trailing: InkWell(
+                      child: Icon(Icons.keyboard_arrow_right),
+                      onTap: () {
+                        return Application.router
+                            .navigateTo(context, "/aboutUs");
+                      },
+                    )),
               ),
             ),
             Divider(
@@ -123,7 +147,7 @@ class _MyProjectPageState extends State<MyProjectPage> {
                 child: ListTile(
                   leading: Icon(Icons.settings),
                   title: Text("设置"),
-                  trailing:Icon(Icons.keyboard_arrow_right),
+                  trailing: Icon(Icons.keyboard_arrow_right),
                 ),
               ),
             ),
