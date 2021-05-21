@@ -11,7 +11,7 @@ import 'package:thzz_project_management/pages/my_project_page.dart';
 class Tabs extends StatelessWidget {
   int currentIndex = 0;
   final List<BottomNavigationBarItem> bottomTabs = [
-    BottomNavigationBarItem(icon: Icon(Icons.home), label: "主页"),
+    BottomNavigationBarItem(icon: Icon(Icons.home), label: "首页"),
     BottomNavigationBarItem(icon: Icon(Icons.assignment), label: "进度填报"),
     BottomNavigationBarItem(icon: Icon(Icons.crop_free), label: "扫码"),
     BottomNavigationBarItem(icon: Icon(Icons.search), label: "构件查看"),

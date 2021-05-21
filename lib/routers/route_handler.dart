@@ -4,6 +4,7 @@ import 'package:thzz_project_management/pages/about_us_page.dart';
 import 'package:thzz_project_management/pages/changepwd_page.dart';
 import 'package:thzz_project_management/pages/component_query_detail_comment_page.dart';
 import 'package:thzz_project_management/pages/component_query_detail_page.dart';
+import 'package:thzz_project_management/pages/component_query_page.dart';
 import 'package:thzz_project_management/pages/history_operate_page.dart';
 import 'package:thzz_project_management/pages/loading_page.dart';
 import 'package:thzz_project_management/pages/login_page.dart';
@@ -65,6 +66,12 @@ Handler settingHandler=Handler(
 Handler historyOperateHandler=Handler(
   handlerFunc: (BuildContext context, Map<String, List<String>> parameters) {
     return HistoryOperatePage();
+  },
+);
+
+Handler componentQueryHandler=Handler(
+  handlerFunc: (BuildContext context, Map<String, List<String>> parameters) {
+    return ComponentQueryPage();
   },
 );
 

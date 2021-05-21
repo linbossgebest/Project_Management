@@ -17,6 +17,7 @@ class Routes {
   static String progressReportPage = "/progressReport";
   static String settingPage = "/setting";
   static String historyOperatePage = "/historyOperate";
+  static String componentQueryPage = "/componentQuery";
   static String componentQueryDetailPage = "/componentQueryDetail";
   static String componentQueryDetailCommentPage =
       "/componentQueryDetailComment";
@@ -39,6 +40,8 @@ class Routes {
     router.define(progressReportPage, handler: progressReportHandler);
     router.define(settingPage, handler: settingHandler);
     router.define(historyOperatePage, handler: historyOperateHandler);
+     router.define(componentQueryPage,
+        handler: componentQueryHandler);
     router.define(componentQueryDetailPage,
         handler: componentQueryDetailHandler);
     router.define(componentQueryDetailCommentPage,

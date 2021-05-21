@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:thzz_project_management/components/custom_datetime_control.dart';
 import 'package:thzz_project_management/components/custom_dropdown_control.dart';
 import 'package:thzz_project_management/components/custom_imagespick_control.dart';
 import 'package:thzz_project_management/components/custom_textbox_control.dart';
+import 'package:thzz_project_management/models/component_model.dart';
 import 'package:thzz_project_management/models/control_type_enum.dart';
+import 'package:thzz_project_management/models/workposition_model.dart';
+import 'package:thzz_project_management/provide/projectprogress_provide.dart';
+import 'package:thzz_project_management/services/projectfile_service.dart';
 
 //通用方法
 //梁段状态转换
@@ -107,17 +112,21 @@ Widget generateControl(name, data, type, {isEnabled}) {
               "$name",
               style: TextStyle(fontSize: 16),
             )),
-        Expanded(flex: 3, child: _custom(data, type,isEnabled: isEnabled)),
+        Expanded(flex: 3, child: _custom(data, type, isEnabled: isEnabled)),
       ],
     ),
   );
 }
 
-Widget _custom(data, ControlType controlType,{isEnabled}) {
+Widget _custom(data, ControlType controlType, {isEnabled}) {
   // String type = controlType;
   switch (controlType) {
     case ControlType.text:
-      return Container(child: CustomTextBoxControl(data: data,isEnabled: isEnabled,));
+      return Container(
+          child: CustomTextBoxControl(
+        data: data,
+        isEnabled: isEnabled,
+      ));
       break;
     case ControlType.select:
       return Container(child: CustomDropDownControl(data: data));
@@ -133,4 +142,37 @@ Widget _custom(data, ControlType controlType,{isEnabled}) {
         child: Text('暂不支持此控件'),
       );
   }
+}
+
+initProjectFileList(dynamic context) async {
+  String token = await querySharedPerferences("token");
+  getWorkPositionList(token).then((value) {
+    //获取工程部位列表
+    var resultData = value.data["resultdata"];
+    //workPositionlist = WorkPositionListModel([]);
+    if (resultData != null) {
+      var data = WorkPositionListModel.fromJson(resultData);
+      var workPositionValue = data.data[0].workPositionName;
+      var workPositionCode = data.data[0].workPositionCode;
+      Provider.of<ProjectProgressProvide>(context, listen: false)
+          .setInitWorkPositionList(data.data);
+      Provider.of<ProjectProgressProvide>(context, listen: false)
+          .setWorkPositionValue(workPositionValue);
+      Provider.of<ProjectProgressProvide>(context, listen: false)
+          .setWorkPositionCode(workPositionCode);
+
+      getComponentList(token, workPositionCode).then((value) {
+        var resultData = value.data["resultdata"];
+        if (resultData != null) {
+          var data = ComponentListModel.fromJson(resultData);
+          Provider.of<ProjectProgressProvide>(context, listen: false)
+              .setInitComponentList(data.data);
+          Provider.of<ProjectProgressProvide>(context, listen: false)
+              .setComponentValue(data.data[0].componentName);
+          Provider.of<ProjectProgressProvide>(context, listen: false)
+              .setComponentCode(data.data[0].componentCode.toString());
+        }
+      });
+    }
+  });
 }

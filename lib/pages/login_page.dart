@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
+import 'package:thzz_project_management/models/component_model.dart';
 import 'package:thzz_project_management/models/return_model.dart';
 import 'package:thzz_project_management/models/swiperimage_model.dart';
 import 'package:thzz_project_management/models/userinfo_model.dart';
+import 'package:thzz_project_management/models/workposition_model.dart';
+import 'package:thzz_project_management/provide/projectprogress_provide.dart';
 import 'package:thzz_project_management/provide/swiperimagelist_provide.dart';
 import 'package:thzz_project_management/routers/application.dart';
 import 'package:thzz_project_management/services/getswiperimages_service.dart';
+import 'package:thzz_project_management/services/projectfile_service.dart';
 import 'package:thzz_project_management/services/user_service.dart';
 import 'package:thzz_project_management/untils/common.dart';
 
@@ -243,7 +247,8 @@ class _LoginPageState extends State<LoginPage> {
                             addSharedPreferences(
                                 "projectDescribe", projectDescribe);
                             //print(returnModel.resultdata["token"]);
-
+                            initProjectFileList(context);
+                            
                             return Application.router
                                 .navigateTo(context, "/tabs"); //路由跳转
                           }

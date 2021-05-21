@@ -4,9 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
 import 'package:provider/provider.dart';
+import 'package:thzz_project_management/models/component_model.dart';
 import 'package:thzz_project_management/models/projectprocess_model.dart';
-import 'package:thzz_project_management/models/workposition_model.dart';
+import 'package:thzz_project_management/models/componentstate_model.dart';
 import 'package:thzz_project_management/provide/projectprogress_provide.dart';
+import 'package:thzz_project_management/routers/application.dart';
 import 'package:thzz_project_management/services/projectfile_service.dart';
 import 'package:thzz_project_management/untils/common.dart';
 import 'package:thzz_project_management/models/control_type_enum.dart';
@@ -24,29 +26,67 @@ class _ProcessReportState extends State<ProcessReportPage> {
   List<Asset> resultList;
   String projectName;
   String token;
-  WorkPositionListModel list = WorkPositionListModel([]);
-  
+  String description;
+  String componentStateDropdownValue;
+  ComponentListModel componentlist = ComponentListModel([]);
+  ComponentStateListModel componentStateList = ComponentStateListModel([]);
+
+  DateTime selectedDate = DateTime.now();
+
+  bool _decideWhichDayToEnable(DateTime day) {
+    ///时间间隔从当前日期到增加10天用户可以选择
+    if ((day.isAfter(DateTime.now().subtract(Duration(days: 1))) &&
+        day.isBefore(DateTime.now().add(Duration(days: 10))))) {
+      return true;
+    }
+    return false;
+  }
+
   @override
   void initState() {
-    super.initState();
     if (mounted) {
       Future.delayed(
           Duration.zero,
           () => setState(() {
                 querySharedPerferences("projectName")
                     .then((value) => projectName = value);
-                querySharedPerferences("token").then((value) => token = value);
-                //获取工程部位列表
-                getWorkPositionList(token).then((value) {
-                  var resultData = value.data["resultdata"];
-
-                  if (resultData != null) {
-                    var data = WorkPositionListModel.fromJson(resultData);
-                    list = data;
-                  }
-                });
+                initProjectFileList(context);
+                getComponentState();
               }));
     }
+
+    super.initState();
+  }
+
+  //获取构件状态列表
+  getComponentState() async {
+    String token = await querySharedPerferences("token");
+    getComponentStateList(token).then((value) {
+      var resultData = value.data["resultdata"];
+      if (resultData != null) {
+        var data = ComponentStateListModel.fromJson(resultData);
+        componentStateList = data;
+        this.componentStateDropdownValue = componentStateList.data[0].stateName;
+      }
+    });
+  }
+
+  Future getComponent(String workPositionCode) async {
+    String token = await querySharedPerferences("token");
+    getComponentList(token, workPositionCode).then((value) {
+      var resultData = value.data["resultdata"];
+
+      if (resultData != null) {
+        var data = ComponentListModel.fromJson(resultData);
+        componentlist = data;
+        Provider.of<ProjectProgressProvide>(context, listen: false)
+            .setInitComponentList(componentlist.data);
+        Provider.of<ProjectProgressProvide>(context, listen: false)
+            .componentValue = componentlist.data[0].componentName;
+        Provider.of<ProjectProgressProvide>(context, listen: false)
+            .componentCode = componentlist.data[0].componentCode.toString();
+      }
+    });
   }
 
   @override
@@ -56,104 +96,376 @@ class _ProcessReportState extends State<ProcessReportPage> {
         builder: () => Consumer<ProjectProgressProvide>(
                 builder: (context, projectProgressProvide, val) {
               return Scaffold(
-                appBar: AppBar(
-                  title: Text("进度填报"),
-                  automaticallyImplyLeading: false,
-                ),
-                body: Container(
-                    child: ListView(children: <Widget>[
-                  generateControl("项目名称", "$projectName", ControlType.text,
-                      isEnabled: false),
-                  generateControl("工程部位", null, ControlType.select),
-                  generateControl("构件名称", null, ControlType.select),
-                  generateControl("构件编号", "xxx构建编号", ControlType.text,
-                      isEnabled: false),
-                  generateControl("构件状态", null, ControlType.select),
-                  generateControl("开始日期", null, ControlType.datetime),
-                  generateControl("施工描述", "施工描述", ControlType.text,
-                      isEnabled: true),
-                  Container(
-                    child: CustomImagesPickControl(),
+                  appBar: AppBar(
+                    title: Text("进度填报"),
+                    automaticallyImplyLeading: false,
                   ),
-                  Container(
-                    margin: EdgeInsets.all(10),
-                    padding: EdgeInsets.all(5),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: <Widget>[
-                        Container(
-                            child: RaisedButton(
-                          textColor: Colors.white,
-                          color: Colors.blue[500],
-                          child: Text("暂存"),
-                          onPressed: () {},
-                        )),
-                        Container(
-                            child: RaisedButton(
-                          textColor: Colors.white,
-                          color: Colors.blue[500],
-                          child: Text("提交"),
-                          onPressed: () async {
-                            resultList = projectProgressProvide.resultList;
-                            ProjectProcessModel projectProcessModel =
-                                projectProgressProvide.projectProcessModel;
-
-                            if (resultList.length != 0) {
-                              List<MultipartFile> files = List();
-                              for (int i = 0; i < resultList.length; i++) {
-                                // 获取 ByteData
-                                ByteData byteData =
-                                    await resultList[i].getByteData(); //图片byte
-                                List<int> imageData =
-                                    byteData.buffer.asUint8List();
-                                String fileName = resultList[i].name; //图片名称
-
-                                MultipartFile multipartFile =
-                                    MultipartFile.fromBytes(
-                                  imageData,
-                                  // 文件名
-                                  filename: fileName,
-                                  // 文件类型
-                                  contentType: MediaType("image", "jpg"),
-                                );
-
-                                files.add(multipartFile);
-                              }
-
-                              FormData formData = FormData.fromMap({
-                                // 后端接口的参数名称
-                                'token': token,
-                                // 'ProjectName': "123",
-                                // 'WorkPosition': "123",
-                                // 'ComponentName': "123",
-                                // 'ComponentCode': "123",
-                                // 'ComponentState': "123",
-                                // 'StartTime': "2021-05-20",
-                                // 'Description': "123",
-                                'ProjectName': projectProcessModel.projectName,
-                                'WorkPosition':
-                                    projectProcessModel.workPosition,
-                                'ComponentName':
-                                    projectProcessModel.componentName,
-                                'ComponentCode':
-                                    projectProcessModel.componentCode,
-                                'ComponentState':
-                                    projectProcessModel.componentState,
-                                'StartTime': projectProcessModel.startTime,
-                                'Description': projectProcessModel.description,
-                                "imgs": files,
-                              });
-
-                              addProjectProgress(formData);
-                            }
-                          },
-                        )),
-                      ],
+                  body: Container(
+                      child: ListView(children: <Widget>[
+                    Container(
+                      margin: EdgeInsets.all(3),
+                      padding: EdgeInsets.all(3),
+                      child: Row(children: [
+                        Expanded(
+                            flex: 1,
+                            child: Text(
+                              "项目名称",
+                              style: TextStyle(fontSize: 16),
+                            )),
+                        Expanded(
+                            flex: 3,
+                            child: Container(
+                              child: TextField(
+                                enabled: false,
+                                //textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: 16,
+                                ),
+                                decoration: InputDecoration(
+                                    hintText: "$projectName",
+                                    contentPadding: EdgeInsets.all(10.0),
+                                    border: OutlineInputBorder()),
+                              ),
+                            )),
+                      ]),
                     ),
-                  )
-                ])),
-              );
+                    Container(
+                        margin: EdgeInsets.all(3),
+                        padding: EdgeInsets.all(3),
+                        child: Row(children: [
+                          Expanded(
+                              flex: 1,
+                              child: Text(
+                                "工程部位",
+                                style: TextStyle(fontSize: 16),
+                              )),
+                          Expanded(
+                              flex: 3,
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  border: Border.all(
+                                      color: Colors.black38, width: 1),
+                                  //边框圆角设置
+                                  borderRadius: BorderRadius.vertical(
+                                      top: Radius.elliptical(4, 4),
+                                      bottom: Radius.elliptical(4, 4)),
+                                ),
+                                margin: EdgeInsets.only(bottom: 5),
+                                padding: EdgeInsets.only(
+                                    top: 5, bottom: 3, left: 15),
+                                child: DropdownButton(
+                                  isExpanded: true,
+                                  underline: Container(color: Colors.white),
+                                  value:
+                                      projectProgressProvide.workPositionValue,
+                                  items: projectProgressProvide.workPositionlist
+                                      .map((item) {
+                                    return DropdownMenuItem(
+                                      child: Text(item.workPositionName),
+                                      value: item.workPositionName,
+                                    );
+                                  }).toList(),
+                                  //items: _workPositionDropdownItems(),
+                                  onChanged: (newValue) {
+                                    setState(() {
+                                      projectProgressProvide.workPositionValue =
+                                          newValue;
+                                      projectProgressProvide.workPositionCode =
+                                          projectProgressProvide
+                                              .workPositionlist
+                                              .firstWhere((element) =>
+                                                  element.workPositionName ==
+                                                  newValue)
+                                              .workPositionCode;
+                                      getComponent(projectProgressProvide
+                                          .workPositionCode);
+                                    });
+                                  },
+                                ),
+                              )),
+                        ])),
+                    Container(
+                        margin: EdgeInsets.all(3),
+                        padding: EdgeInsets.all(3),
+                        child: Row(children: [
+                          Expanded(
+                              flex: 1,
+                              child: Text(
+                                "构件名称",
+                                style: TextStyle(fontSize: 16),
+                              )),
+                          Expanded(
+                              flex: 3,
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  border: Border.all(
+                                      color: Colors.black38, width: 1),
+                                  //边框圆角设置
+                                  borderRadius: BorderRadius.vertical(
+                                      top: Radius.elliptical(4, 4),
+                                      bottom: Radius.elliptical(4, 4)),
+                                ),
+                                margin: EdgeInsets.only(bottom: 5),
+                                padding: EdgeInsets.only(
+                                    top: 5, bottom: 3, left: 15),
+                                child: DropdownButton(
+                                  isExpanded: true,
+                                  underline: Container(color: Colors.white),
+                                  value: projectProgressProvide.componentValue,
+                                  onChanged: (newValue) {
+                                    setState(() {
+                                      //projectProgressProvide.setComponentValue(newValue);
+                                      projectProgressProvide.componentValue =
+                                          newValue;
+                                      projectProgressProvide.componentCode =
+                                          projectProgressProvide.componentlist
+                                              .firstWhere((element) =>
+                                                  element.componentName ==
+                                                  newValue)
+                                              .componentCode
+                                              .toString();
+                                    });
+                                  },
+                                  items: projectProgressProvide.componentlist
+                                      .map((item) {
+                                    return DropdownMenuItem(
+                                      child: Text(item.componentName),
+                                      value: item.componentName,
+                                    );
+                                  }).toList(),
+                                ),
+                              )),
+                        ])),
+                    Container(
+                      margin: EdgeInsets.all(3),
+                      padding: EdgeInsets.all(3),
+                      child: Row(children: [
+                        Expanded(
+                            flex: 1,
+                            child: Text(
+                              "构件编号",
+                              style: TextStyle(fontSize: 16),
+                            )),
+                        Expanded(
+                            flex: 3,
+                            child: Container(
+                              child: TextField(
+                                enabled: false,
+                                //textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: 16,
+                                ),
+                                decoration: InputDecoration(
+                                    hintText:
+                                        "${projectProgressProvide.componentCode}",
+                                    contentPadding: EdgeInsets.all(10.0),
+                                    border: OutlineInputBorder()),
+                              ),
+                            )),
+                      ]),
+                    ),
+                    Container(
+                        margin: EdgeInsets.all(3),
+                        padding: EdgeInsets.all(3),
+                        child: Row(children: [
+                          Expanded(
+                              flex: 1,
+                              child: Text(
+                                "构件状态",
+                                style: TextStyle(fontSize: 16),
+                              )),
+                          Expanded(
+                              flex: 3,
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  border: Border.all(
+                                      color: Colors.black38, width: 1),
+                                  //边框圆角设置
+                                  borderRadius: BorderRadius.vertical(
+                                      top: Radius.elliptical(4, 4),
+                                      bottom: Radius.elliptical(4, 4)),
+                                ),
+                                margin: EdgeInsets.only(bottom: 5),
+                                padding: EdgeInsets.only(
+                                    top: 5, bottom: 3, left: 15),
+                                child: DropdownButton<String>(
+                                  isExpanded: true,
+                                  underline: Container(color: Colors.white),
+                                  value: componentStateDropdownValue,
+                                  onChanged: (String newValue) {
+                                    setState(() {
+                                      componentStateDropdownValue = newValue;
+                                    });
+                                  },
+                                  items: componentStateList.data.map((item) {
+                                    return DropdownMenuItem(
+                                      child: Text(item.stateName),
+                                      value: item.stateName,
+                                    );
+                                  }).toList(),
+                                ),
+                              )),
+                        ])),
+                    Container(
+                      margin: EdgeInsets.all(3),
+                      padding: EdgeInsets.all(3),
+                      child: Row(children: [
+                        Expanded(
+                            flex: 1,
+                            child: Text(
+                              "开始日期",
+                              style: TextStyle(fontSize: 16),
+                            )),
+                        Expanded(
+                            flex: 3,
+                            child: Container(
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: <Widget>[
+                                  RaisedButton(
+                                    textColor: Colors.white,
+                                    color: Colors.blue[500],
+                                    onPressed: () => _selectDate(context),
+                                    child: Text(
+                                      "${selectedDate.toLocal()}".split(' ')[0],
+                                      // style: TextStyle(color: Colors.black),
+                                    ),
+                                    // color: Colors.white10,
+                                  ),
+                                ],
+                              ),
+                            )),
+                      ]),
+                    ),
+                    Container(
+                      margin: EdgeInsets.all(3),
+                      padding: EdgeInsets.all(3),
+                      child: Row(children: [
+                        Expanded(
+                            flex: 1,
+                            child: Text(
+                              "施工描述",
+                              style: TextStyle(fontSize: 16),
+                            )),
+                        Expanded(
+                            flex: 3,
+                            child: Container(
+                              child: TextField(
+                                enabled: true,
+                                //textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: 16,
+                                ),
+                                decoration: InputDecoration(
+                                    hintText: "施工描述",
+                                    contentPadding: EdgeInsets.all(10.0),
+                                    border: OutlineInputBorder()),
+                                onChanged: (newValue) {
+                                  setState(() {
+                                    this.description = newValue;
+                                    print(description);
+                                  });
+                                },
+                              ),
+                            )),
+                      ]),
+                    ),
+                    Container(
+                      child: CustomImagesPickControl(),
+                    ),
+                    Container(
+                      margin: EdgeInsets.all(10),
+                      padding: EdgeInsets.all(5),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: <Widget>[
+                          Container(
+                              child: RaisedButton(
+                            textColor: Colors.white,
+                            color: Colors.blue[500],
+                            child: Text("暂存"),
+                            onPressed: () {},
+                          )),
+                          Container(
+                              child: RaisedButton(
+                            textColor: Colors.white,
+                            color: Colors.blue[500],
+                            child: Text("提交"),
+                            onPressed: () async {
+                              resultList = projectProgressProvide.resultList;
+                              ProjectProcessModel projectProcessModel =
+                                  projectProgressProvide.projectProcessModel;
+
+                              if (resultList.length != 0) {
+                                List<MultipartFile> files = List();
+                                for (int i = 0; i < resultList.length; i++) {
+                                  // 获取 ByteData
+                                  ByteData byteData = await resultList[i]
+                                      .getByteData(); //图片byte
+                                  List<int> imageData =
+                                      byteData.buffer.asUint8List();
+                                  String fileName = resultList[i].name; //图片名称
+
+                                  MultipartFile multipartFile =
+                                      MultipartFile.fromBytes(
+                                    imageData,
+                                    // 文件名
+                                    filename: fileName,
+                                    // 文件类型
+                                    contentType: MediaType("image", "jpg"),
+                                  );
+
+                                  files.add(multipartFile);
+                                }
+
+                                FormData formData = FormData.fromMap({
+                                  // 后端接口的参数名称
+                                  'token': token,
+                                  'ProjectName': projectName,
+                                  'WorkPosition':
+                                      projectProgressProvide.workPositionValue,
+                                  'ComponentName':
+                                      projectProgressProvide.componentValue,
+                                  'ComponentCode':
+                                      projectProgressProvide.componentCode,
+                                  'ComponentState': componentStateDropdownValue,
+                                  'StartTime': selectedDate,
+                                  'Description': description,
+                                  "imgs": files,
+                                });
+
+                                addProjectProgress(formData).then((value) {
+                                  Application.router
+                                      .navigateTo(context, "/tabs"); //路由跳转
+                                });
+                              }
+                            },
+                          )),
+                        ],
+                      ),
+                    )
+                  ])));
             }));
+  }
+
+  _selectDate(BuildContext context) async {
+    final DateTime picked = await showDatePicker(
+        context: context,
+        initialDate: selectedDate,
+        firstDate: DateTime(2000),
+        lastDate: DateTime(2025),
+        helpText: "日历",
+        cancelText: "取消",
+        confirmText: "确定",
+        selectableDayPredicate: _decideWhichDayToEnable,
+        builder: (context, child) {
+          return Theme(data: ThemeData.light(), child: child);
+        });
+    if (picked != null && picked != selectedDate)
+      setState(() {
+        selectedDate = picked;
+        print(selectedDate);
+      });
   }
 }

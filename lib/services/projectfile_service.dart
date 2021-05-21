@@ -21,12 +21,18 @@ getWorkPositionList(String token) async {
 }
 
 //获取构件列表
-getComponentList(
-    String token, String workPositionCode) async {
+Future getComponentList(String token, String workPositionCode) async {
   Map<String, dynamic> queryParameters = {
     "token": token,
     "WorkPositionCode": workPositionCode
   };
   return await get(Config.getComponentListUrl,
+      queryParameters: queryParameters);
+}
+
+//获取构件状态列表
+getComponentStateList(String token) async {
+  Map<String, dynamic> queryParameters = {"token": token};
+  return await get(Config.getComponentStateListUrl,
       queryParameters: queryParameters);
 }
