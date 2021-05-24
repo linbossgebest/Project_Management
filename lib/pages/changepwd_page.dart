@@ -4,6 +4,7 @@ import 'package:thzz_project_management/models/return_model.dart';
 import 'package:thzz_project_management/routers/application.dart';
 import 'package:thzz_project_management/services/user_service.dart';
 import 'package:thzz_project_management/untils/common.dart';
+import 'package:thzz_project_management/untils/toast.dart';
 
 class ChangePwdPage extends StatefulWidget {
   ChangePwdPage({Key key}) : super(key: key);
@@ -145,15 +146,20 @@ class _ChangePwdPageState extends State<ChangePwdPage> {
             _focusNodePassWord.unfocus();
             _formKey.currentState.save();
             if (_formKey.currentState.validate()) {
-                querySharedPerferences("token").then((token) => {
-                  userRevisePassword(token,_password).then((value){
-                      var resultData = value.data["resultdata"];
-                      if (resultData != null) {
-                         return Application.router
-                                .navigateTo(context, "/login");//修改密码成功，路由跳转登录页面
+              querySharedPerferences("token").then((token) => {
+                    userRevisePassword(token, _password).then((value) {
+                      ReturnModel returnModel =
+                          ReturnModel.fromJson(value.data);
+                      if (returnModel.type == 3 || returnModel.type == 2) {
+                        //3失败 2警告
+                        Toast.show(returnModel.message);
+                      } else {
+                        Toast.show(returnModel.message);
+                        return Application.router
+                            .navigateTo(context, "/login"); //修改密码成功，路由跳转登录页面
                       }
-                  })
-                });
+                    })
+                  });
             }
           }),
     );

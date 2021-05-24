@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:thzz_project_management/config/configure.dart';
 import 'common_service.dart';
 
@@ -16,12 +17,22 @@ userLoginCheck(String account, String password) async {
 
 //修改密码
 userRevisePassword(String token, String password) async {
-  Map<String, dynamic> data = {
-    "token": token,
-    "password": password,
-  };
-  return await post(Config.userLoginUrl, data: data);
+  // Map<String, dynamic> data = {
+  //   "token": token,
+  //   "password": password,
+  // };
+  FormData formData = FormData.fromMap({
+    'token':token,
+    'password':password
+  });
+  return await post(Config.userRevisePasswordUrl, data: formData);
 }
+
+// //修改密码
+// userRevisePassword(dynamic data) async {
+//   return await post(Config.userRevisePasswordUrl, data: data);
+// }
+
 
 //获取历史操作
 userGetLogRecord(String token) async {

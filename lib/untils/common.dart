@@ -70,18 +70,33 @@ String getStateByIndex(int index) {
   return state;
 }
 
-//新增本地持久化信息
+//新增本地持久化信息 string类型
 void addSharedPreferences(String key, String value) async {
   Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
   SharedPreferences prefs = await _prefs;
   prefs.setString(key, value);
 }
 
-//查询本地持久化信息
+//查询本地持久化信息 string类型
 Future<String> querySharedPerferences(String key) async {
   Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
   SharedPreferences prefs = await _prefs;
   String result = prefs.getString(key);
+  return result;
+}
+
+//新增本地持久化信息 List<String>类型
+void addListSharedPreferences(String key, List<String> value) async {
+  Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
+  SharedPreferences prefs = await _prefs;
+  prefs.setStringList(key, value);
+}
+
+//查询本地持久化信息 List<String>类型
+Future<List<String>> queryListSharedPerferences(String key) async {
+  Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
+  SharedPreferences prefs = await _prefs;
+  List<String> result = prefs.getStringList(key);
   return result;
 }
 
@@ -90,6 +105,12 @@ void removeSharedPreferences(String key) async {
   Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
   SharedPreferences prefs = await _prefs;
   prefs.remove(key);
+}
+
+//清除所有缓存
+void removeAllSharedPreferences() async {
+  SharedPreferences _prefs = await SharedPreferences.getInstance();
+  _prefs.clear();
 }
 
 //通用组件
@@ -146,33 +167,41 @@ Widget _custom(data, ControlType controlType, {isEnabled}) {
 
 initProjectFileList(dynamic context) async {
   String token = await querySharedPerferences("token");
-  getWorkPositionList(token).then((value) {
-    //获取工程部位列表
-    var resultData = value.data["resultdata"];
-    //workPositionlist = WorkPositionListModel([]);
-    if (resultData != null) {
-      var data = WorkPositionListModel.fromJson(resultData);
-      var workPositionValue = data.data[0].workPositionName;
-      var workPositionCode = data.data[0].workPositionCode;
-      Provider.of<ProjectProgressProvide>(context, listen: false)
-          .setInitWorkPositionList(data.data);
-      Provider.of<ProjectProgressProvide>(context, listen: false)
-          .setWorkPositionValue(workPositionValue);
-      Provider.of<ProjectProgressProvide>(context, listen: false)
-          .setWorkPositionCode(workPositionCode);
+  var cachedWorkPositionValue =
+      await querySharedPerferences("workPositionValue");
+  var cachedComponentValue = await querySharedPerferences("componentValue");
+  var cachedComponentCode = await querySharedPerferences("componentCode");
+  if (cachedWorkPositionValue == null &&
+      cachedComponentValue == null &&
+      cachedComponentCode == null) {
+    getWorkPositionList(token).then((value) {
+      //获取工程部位列表
+      var resultData = value.data["resultdata"];
+      //workPositionlist = WorkPositionListModel([]);
+      if (resultData != null) {
+        var data = WorkPositionListModel.fromJson(resultData);
+        var workPositionValue = data.data[0].workPositionName;
+        var workPositionCode = data.data[0].workPositionCode;
+        Provider.of<ProjectProgressProvide>(context, listen: false)
+            .setInitWorkPositionList(data.data);
+        Provider.of<ProjectProgressProvide>(context, listen: false)
+            .setWorkPositionValue(workPositionValue);
+        Provider.of<ProjectProgressProvide>(context, listen: false)
+            .setWorkPositionCode(workPositionCode);
 
-      getComponentList(token, workPositionCode).then((value) {
-        var resultData = value.data["resultdata"];
-        if (resultData != null) {
-          var data = ComponentListModel.fromJson(resultData);
-          Provider.of<ProjectProgressProvide>(context, listen: false)
-              .setInitComponentList(data.data);
-          Provider.of<ProjectProgressProvide>(context, listen: false)
-              .setComponentValue(data.data[0].componentName);
-          Provider.of<ProjectProgressProvide>(context, listen: false)
-              .setComponentCode(data.data[0].componentCode.toString());
-        }
-      });
-    }
-  });
+        getComponentList(token, workPositionCode).then((value) {
+          var resultData = value.data["resultdata"];
+          if (resultData != null) {
+            var data = ComponentListModel.fromJson(resultData);
+            Provider.of<ProjectProgressProvide>(context, listen: false)
+                .setInitComponentList(data.data);
+            Provider.of<ProjectProgressProvide>(context, listen: false)
+                .setComponentValue(data.data[0].componentName);
+            Provider.of<ProjectProgressProvide>(context, listen: false)
+                .setComponentCode(data.data[0].componentCode.toString());
+          }
+        });
+      }
+    });
+  }
 }

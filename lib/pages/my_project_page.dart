@@ -178,11 +178,8 @@ class _MyProjectPageState extends State<MyProjectPage> {
                                 child: Text("取消")),
                             MaterialButton(
                                 onPressed: () {
-                                  ///移除本地缓存
-                                  removeSharedPreferences("username");
-                                  removeSharedPreferences("userrealname");
-                                  removeSharedPreferences("token");
-                                  removeSharedPreferences("usericon");
+                                  ///退出移除本地缓存
+                                  removeAllSharedPreferences();
                                   return Application.router
                                       .navigateTo(context, "/login");
                                 },

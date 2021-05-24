@@ -2,6 +2,7 @@ import 'package:fluro/fluro.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:thzz_project_management/pages/home_page.dart';
+import 'package:thzz_project_management/pages/tabs_page.dart';
 import 'package:thzz_project_management/provide/current_index.dart';
 import 'package:thzz_project_management/provide/logrecordlist_provide.dart';
 import 'package:thzz_project_management/provide/projectprogress_provide.dart';
@@ -56,7 +57,7 @@ class MyApp extends StatelessWidget {
           '/login': (ctx) => LoginPage(),
         },
         initialRoute: "/loading",
-        home: HomePage(),
+        home: Tabs(),
       ),
     );
   }

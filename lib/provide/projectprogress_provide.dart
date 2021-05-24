@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
 import 'package:thzz_project_management/models/component_model.dart';
+import 'package:thzz_project_management/models/componentstate_model.dart';
 import 'package:thzz_project_management/models/projectprocess_model.dart';
 import 'package:thzz_project_management/models/workposition_model.dart';
 
@@ -12,7 +13,7 @@ class ProjectProgressProvide with ChangeNotifier {
   List<ComponentModel> componentlist = [];
   String componentValue;
   String componentCode;
-
+  List<ComponentStateModel> componentStatelist = [];
   List<Asset> resultList = [];
 
   setUploadImages(List list) {
@@ -35,6 +36,11 @@ class ProjectProgressProvide with ChangeNotifier {
 
   setInitComponentList(List list) {
     componentlist = list;
+    notifyListeners();
+  }
+
+  setComponentStateList(List list){
+    componentStatelist=list;
     notifyListeners();
   }
 

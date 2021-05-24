@@ -5,13 +5,11 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:thzz_project_management/models/component_model.dart';
-import 'package:thzz_project_management/models/projectprocess_model.dart';
 import 'package:thzz_project_management/models/componentstate_model.dart';
 import 'package:thzz_project_management/provide/projectprogress_provide.dart';
 import 'package:thzz_project_management/routers/application.dart';
 import 'package:thzz_project_management/services/projectfile_service.dart';
 import 'package:thzz_project_management/untils/common.dart';
-import 'package:thzz_project_management/models/control_type_enum.dart';
 import 'package:thzz_project_management/components/custom_imagespick_control.dart';
 import 'package:http_parser/http_parser.dart';
 
@@ -30,6 +28,11 @@ class _ProcessReportState extends State<ProcessReportPage> {
   String componentStateDropdownValue;
   ComponentListModel componentlist = ComponentListModel([]);
   ComponentStateListModel componentStateList = ComponentStateListModel([]);
+  String cachedWorkPositionValue;
+  String cachedComponentValue;
+  String cachedComponentCode;
+  String cachedComponentState;
+  String cachedDescription;
 
   DateTime selectedDate = DateTime.now();
 
@@ -48,8 +51,7 @@ class _ProcessReportState extends State<ProcessReportPage> {
       Future.delayed(
           Duration.zero,
           () => setState(() {
-                querySharedPerferences("projectName")
-                    .then((value) => projectName = value);
+                getCached();
                 initProjectFileList(context);
                 getComponentState();
               }));
@@ -58,21 +60,49 @@ class _ProcessReportState extends State<ProcessReportPage> {
     super.initState();
   }
 
+  getCached() async {
+    token = await querySharedPerferences("token");
+    projectName = await querySharedPerferences("projectName");
+    cachedWorkPositionValue = await querySharedPerferences("workPositionValue");
+    cachedComponentValue = await querySharedPerferences("componentValue");
+    cachedComponentCode = await querySharedPerferences("componentCode");
+    cachedComponentState = await querySharedPerferences("componentState");
+    cachedDescription = await querySharedPerferences("description");
+  }
+
+  Future removeCached() async {
+    removeSharedPreferences("workPositionValue");
+    removeSharedPreferences("componentValue");
+    removeSharedPreferences("componentCode");
+    removeSharedPreferences("componentState");
+    removeSharedPreferences("description");
+
+    cachedWorkPositionValue = null;
+    cachedComponentValue = null;
+    cachedComponentCode = null;
+    cachedComponentState = null;
+  }
+
   //获取构件状态列表
   getComponentState() async {
     String token = await querySharedPerferences("token");
+
     getComponentStateList(token).then((value) {
       var resultData = value.data["resultdata"];
       if (resultData != null) {
         var data = ComponentStateListModel.fromJson(resultData);
         componentStateList = data;
+        Provider.of<ProjectProgressProvide>(context, listen: false)
+            .setComponentStateList(componentStateList.data);
         this.componentStateDropdownValue = componentStateList.data[0].stateName;
       }
     });
   }
 
+  //获取构件列表
   Future getComponent(String workPositionCode) async {
     String token = await querySharedPerferences("token");
+
     getComponentList(token, workPositionCode).then((value) {
       var resultData = value.data["resultdata"];
 
@@ -122,7 +152,7 @@ class _ProcessReportState extends State<ProcessReportPage> {
                                   fontSize: 16,
                                 ),
                                 decoration: InputDecoration(
-                                    hintText: "$projectName",
+                                    hintText: projectName,
                                     contentPadding: EdgeInsets.all(10.0),
                                     border: OutlineInputBorder()),
                               ),
@@ -156,8 +186,10 @@ class _ProcessReportState extends State<ProcessReportPage> {
                                 child: DropdownButton(
                                   isExpanded: true,
                                   underline: Container(color: Colors.white),
-                                  value:
-                                      projectProgressProvide.workPositionValue,
+                                  value: cachedWorkPositionValue != null
+                                      ? cachedWorkPositionValue
+                                      : projectProgressProvide
+                                          .workPositionValue,
                                   items: projectProgressProvide.workPositionlist
                                       .map((item) {
                                     return DropdownMenuItem(
@@ -166,19 +198,22 @@ class _ProcessReportState extends State<ProcessReportPage> {
                                     );
                                   }).toList(),
                                   //items: _workPositionDropdownItems(),
-                                  onChanged: (newValue) {
-                                    setState(() {
-                                      projectProgressProvide.workPositionValue =
-                                          newValue;
-                                      projectProgressProvide.workPositionCode =
-                                          projectProgressProvide
-                                              .workPositionlist
-                                              .firstWhere((element) =>
-                                                  element.workPositionName ==
-                                                  newValue)
-                                              .workPositionCode;
-                                      getComponent(projectProgressProvide
-                                          .workPositionCode);
+                                  onChanged: (newValue) async {
+                                    removeCached().then((value) {
+                                      setState(() {
+                                        projectProgressProvide
+                                            .workPositionValue = newValue;
+                                        projectProgressProvide
+                                                .workPositionCode =
+                                            projectProgressProvide
+                                                .workPositionlist
+                                                .firstWhere((element) =>
+                                                    element.workPositionName ==
+                                                    newValue)
+                                                .workPositionCode;
+                                        getComponent(projectProgressProvide
+                                            .workPositionCode);
+                                      });
                                     });
                                   },
                                 ),
@@ -211,7 +246,9 @@ class _ProcessReportState extends State<ProcessReportPage> {
                                 child: DropdownButton(
                                   isExpanded: true,
                                   underline: Container(color: Colors.white),
-                                  value: projectProgressProvide.componentValue,
+                                  value: cachedComponentValue != null
+                                      ? cachedComponentValue
+                                      : projectProgressProvide.componentValue,
                                   onChanged: (newValue) {
                                     setState(() {
                                       //projectProgressProvide.setComponentValue(newValue);
@@ -256,8 +293,9 @@ class _ProcessReportState extends State<ProcessReportPage> {
                                   fontSize: 16,
                                 ),
                                 decoration: InputDecoration(
-                                    hintText:
-                                        "${projectProgressProvide.componentCode}",
+                                    hintText: cachedComponentCode != null
+                                        ? cachedComponentCode
+                                        : projectProgressProvide.componentCode,
                                     contentPadding: EdgeInsets.all(10.0),
                                     border: OutlineInputBorder()),
                               ),
@@ -291,13 +329,19 @@ class _ProcessReportState extends State<ProcessReportPage> {
                                 child: DropdownButton<String>(
                                   isExpanded: true,
                                   underline: Container(color: Colors.white),
-                                  value: componentStateDropdownValue,
+                                  value: cachedComponentState != null
+                                      ? cachedComponentState
+                                      : componentStateDropdownValue,
                                   onChanged: (String newValue) {
                                     setState(() {
                                       componentStateDropdownValue = newValue;
+                                      cachedComponentState =
+                                          componentStateDropdownValue;
                                     });
                                   },
-                                  items: componentStateList.data.map((item) {
+                                  items: projectProgressProvide
+                                      .componentStatelist
+                                      .map((item) {
                                     return DropdownMenuItem(
                                       child: Text(item.stateName),
                                       value: item.stateName,
@@ -358,12 +402,13 @@ class _ProcessReportState extends State<ProcessReportPage> {
                                 ),
                                 decoration: InputDecoration(
                                     hintText: "施工描述",
+                                    labelText: cachedDescription,
                                     contentPadding: EdgeInsets.all(10.0),
                                     border: OutlineInputBorder()),
                                 onChanged: (newValue) {
                                   setState(() {
                                     this.description = newValue;
-                                    print(description);
+                                    //print(description);
                                   });
                                 },
                               ),
@@ -385,7 +430,18 @@ class _ProcessReportState extends State<ProcessReportPage> {
                             textColor: Colors.white,
                             color: Colors.blue[500],
                             child: Text("暂存"),
-                            onPressed: () {},
+                            onPressed: () async {
+                              addSharedPreferences("workPositionValue",
+                                  projectProgressProvide.workPositionValue);
+                              addSharedPreferences("componentValue",
+                                  projectProgressProvide.componentValue);
+                              addSharedPreferences("componentCode",
+                                  projectProgressProvide.componentCode);
+                              addSharedPreferences("componentState",
+                                  componentStateDropdownValue);
+                              addSharedPreferences("description", description);
+                              //addListSharedPreferences("imgs",projectProgressProvide);
+                            },
                           )),
                           Container(
                               child: RaisedButton(
@@ -393,53 +449,103 @@ class _ProcessReportState extends State<ProcessReportPage> {
                             color: Colors.blue[500],
                             child: Text("提交"),
                             onPressed: () async {
-                              resultList = projectProgressProvide.resultList;
-                              ProjectProcessModel projectProcessModel =
-                                  projectProgressProvide.projectProcessModel;
+                              showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return AlertDialog(
+                                      title: Text(
+                                        "提示",
+                                        textAlign: TextAlign.center,
+                                      ),
+                                      content: Text(
+                                        "是否确定提交数据",
+                                        textAlign: TextAlign.center,
+                                      ),
+                                      actions: <Widget>[
+                                        MaterialButton(
+                                            onPressed: () {
+                                              Navigator.pop(context);
+                                            },
+                                            child: Text("取消")),
+                                        MaterialButton(
+                                            onPressed: () async {
+                                              //移除缓存
+                                              removeSharedPreferences(
+                                                  "workPositionValue");
+                                              removeSharedPreferences(
+                                                  "componentValue");
+                                              removeSharedPreferences(
+                                                  "componentCode");
+                                              removeSharedPreferences(
+                                                  "componentState");
+                                              removeSharedPreferences(
+                                                  "description");
 
-                              if (resultList.length != 0) {
-                                List<MultipartFile> files = List();
-                                for (int i = 0; i < resultList.length; i++) {
-                                  // 获取 ByteData
-                                  ByteData byteData = await resultList[i]
-                                      .getByteData(); //图片byte
-                                  List<int> imageData =
-                                      byteData.buffer.asUint8List();
-                                  String fileName = resultList[i].name; //图片名称
+                                              resultList =
+                                                  projectProgressProvide
+                                                      .resultList;
+                                              List<MultipartFile> files = [];
+                                              if (resultList.length != 0) {
+                                                for (int i = 0;
+                                                    i < resultList.length;
+                                                    i++) {
+                                                  // 获取 ByteData
+                                                  ByteData byteData =
+                                                      await resultList[i]
+                                                          .getByteData(); //图片byte
+                                                  List<int> imageData = byteData
+                                                      .buffer
+                                                      .asUint8List();
+                                                  String fileName =
+                                                      resultList[i].name; //图片名称
 
-                                  MultipartFile multipartFile =
-                                      MultipartFile.fromBytes(
-                                    imageData,
-                                    // 文件名
-                                    filename: fileName,
-                                    // 文件类型
-                                    contentType: MediaType("image", "jpg"),
-                                  );
+                                                  MultipartFile multipartFile =
+                                                      MultipartFile.fromBytes(
+                                                    imageData,
+                                                    // 文件名
+                                                    filename: fileName,
+                                                    // 文件类型
+                                                    contentType: MediaType(
+                                                        "image", "jpg"),
+                                                  );
 
-                                  files.add(multipartFile);
-                                }
+                                                  files.add(multipartFile);
+                                                }
+                                              }
 
-                                FormData formData = FormData.fromMap({
-                                  // 后端接口的参数名称
-                                  'token': token,
-                                  'ProjectName': projectName,
-                                  'WorkPosition':
-                                      projectProgressProvide.workPositionValue,
-                                  'ComponentName':
-                                      projectProgressProvide.componentValue,
-                                  'ComponentCode':
-                                      projectProgressProvide.componentCode,
-                                  'ComponentState': componentStateDropdownValue,
-                                  'StartTime': selectedDate,
-                                  'Description': description,
-                                  "imgs": files,
-                                });
+                                              FormData formData =
+                                                  FormData.fromMap({
+                                                // 后端接口的参数名称
+                                                'token': token,
+                                                'ProjectName': projectName,
+                                                'WorkPosition':
+                                                    projectProgressProvide
+                                                        .workPositionValue,
+                                                'ComponentName':
+                                                    projectProgressProvide
+                                                        .componentValue,
+                                                'ComponentCode':
+                                                    projectProgressProvide
+                                                        .componentCode,
+                                                'ComponentState':
+                                                    componentStateDropdownValue,
+                                                'StartTime': selectedDate,
+                                                'Description': description,
+                                                "imgs": files,
+                                              });
 
-                                addProjectProgress(formData).then((value) {
-                                  Application.router
-                                      .navigateTo(context, "/tabs"); //路由跳转
-                                });
-                              }
+                                              addProjectProgress(formData)
+                                                  .then((value) {
+                                                projectProgressProvide
+                                                    .resultList = []; //清空照片
+                                                Application.router.navigateTo(
+                                                    context, "/tabs"); //路由跳转
+                                              });
+                                            },
+                                            child: Text("确定")),
+                                      ],
+                                    );
+                                  });
                             },
                           )),
                         ],

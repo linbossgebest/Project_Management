@@ -18,6 +18,8 @@ class _CustomImagesPickControlState extends State<CustomImagesPickControl> {
   @override
   void initState() {
     super.initState();
+    images =
+        Provider.of<ProjectProgressProvide>(context, listen: false).resultList;
   }
 
   Widget buildGridView() {

@@ -6,6 +6,7 @@ import 'package:thzz_project_management/models/return_model.dart';
 import 'package:thzz_project_management/models/swiperimage_model.dart';
 import 'package:thzz_project_management/models/userinfo_model.dart';
 import 'package:thzz_project_management/models/workposition_model.dart';
+import 'package:thzz_project_management/provide/current_index.dart';
 import 'package:thzz_project_management/provide/projectprogress_provide.dart';
 import 'package:thzz_project_management/provide/swiperimagelist_provide.dart';
 import 'package:thzz_project_management/routers/application.dart';
@@ -219,6 +220,9 @@ class _LoginPageState extends State<LoginPage> {
                         //3失败 2警告
                         _showMessageDialog(returnModel.message);
                       } else if (returnModel.type == 1) {
+                        Provider.of<CurrentIndexProvide>(context, listen: false)
+                            .changeIndex(0); //退出index重置为0
+
                         var userInfo =
                             UserInfoModel.fromJson(returnModel.resultdata);
                         var token = userInfo.token; //签名
@@ -248,7 +252,7 @@ class _LoginPageState extends State<LoginPage> {
                                 "projectDescribe", projectDescribe);
                             //print(returnModel.resultdata["token"]);
                             initProjectFileList(context);
-                            
+
                             return Application.router
                                 .navigateTo(context, "/tabs"); //路由跳转
                           }
