@@ -40,7 +40,10 @@ class _LoadingPageState extends State<LoadingPage> {
     return Center(
       child: Stack(
         children: <Widget>[
-          Image.asset("lib/images/background.jpg"),
+          Image.asset(
+            "lib/images/background.jpg",
+            fit: BoxFit.fill,
+          ),
           Center(
             child: Text(
               "欢迎使用漳州项目管理平台",

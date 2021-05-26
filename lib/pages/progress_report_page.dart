@@ -537,7 +537,7 @@ class _ProcessReportState extends State<ProcessReportPage> {
                                               addProjectProgress(formData)
                                                   .then((value) {
                                                 projectProgressProvide
-                                                    .resultList = []; //清空照片
+                                                    .resultList = []; //清空缓存照片
                                                 Application.router.navigateTo(
                                                     context, "/tabs"); //路由跳转
                                               });

@@ -73,6 +73,7 @@ class _HomePageState extends State<HomePage> {
                         key: UniqueKey(),
                         //轮播图
                         itemBuilder: (BuildContext context, int index) {
+                          //print(swiperImagelist[index].filePath);
                           return Image.network(
                             //获取图片
                             swiperImagelist[index].filePath,

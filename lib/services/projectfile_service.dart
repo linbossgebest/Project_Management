@@ -36,3 +36,30 @@ getComponentStateList(String token) async {
   return await get(Config.getComponentStateListUrl,
       queryParameters: queryParameters);
 }
+
+//获取质量问题统计
+getQualitySumgList(String token) async {
+  Map<String, dynamic> queryParameters = {"token": token};
+  return await get(Config.getQualitySumListUrl,
+      queryParameters: queryParameters);
+}
+
+//构件查询
+queryProjectComponentList(String token, String componentName) async {
+  Map<String, dynamic> queryParameters = {
+    "token": token,
+    "componentName": componentName
+  };
+  return await get(Config.getQualitySumListUrl,
+      queryParameters: queryParameters);
+}
+
+//构件明细查询
+queryProjectComponentDetai(String token, String componentName) async {
+  Map<String, dynamic> queryParameters = {
+    "token": token,
+    "componentName": componentName
+  };
+  return await get(Config.getComponentDetailUrl,
+      queryParameters: queryParameters);
+}

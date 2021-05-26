@@ -30,8 +30,20 @@ class Config {
   //进度填报和上传现场图片
   static const String addProjectProgressoUrl =
       ipAddress + "/ProjectFile/AddProjectProgress";
-  
+
   //获取构件状态列表
   static const String getComponentStateListUrl =
       ipAddress + "/ProjectFile/GetComponentStateList";
+
+  //获取质量问题统计
+  static const String getQualitySumListUrl =
+      ipAddress + "/ProjectFile/GetQualitySum";
+
+  //构件查询
+  static const String getProjectComponentListUrl =
+      ipAddress + "/ProjectFile/GetProjectComponentList";
+  
+  //构件详细查询
+  static const String getComponentDetailUrl =
+      ipAddress + "/ProjectFile/GetComponentDetail";
 }

@@ -2,12 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:thzz_project_management/models/component_model.dart';
+import 'package:thzz_project_management/models/quality_model.dart';
 import 'package:thzz_project_management/models/return_model.dart';
 import 'package:thzz_project_management/models/swiperimage_model.dart';
 import 'package:thzz_project_management/models/userinfo_model.dart';
 import 'package:thzz_project_management/models/workposition_model.dart';
 import 'package:thzz_project_management/provide/current_index.dart';
 import 'package:thzz_project_management/provide/projectprogress_provide.dart';
+import 'package:thzz_project_management/provide/qualitysum_provide.dart';
 import 'package:thzz_project_management/provide/swiperimagelist_provide.dart';
 import 'package:thzz_project_management/routers/application.dart';
 import 'package:thzz_project_management/services/getswiperimages_service.dart';
@@ -230,7 +232,16 @@ class _LoginPageState extends State<LoginPage> {
                         var userIcon = userInfo.headIcon; //用户图标
                         var projectName = userInfo.projectName; //项目名称
                         var projectDescribe = userInfo.projectDescribe; //项目描述
-
+                        //获取首页展示的质量问题报表数据
+                        getQualitySumgList(token).then((value) {
+                          var resultData = value.data["resultdata"];
+                          if (resultData != null) {
+                            var data = QualityListModel.fromJson(resultData);
+                            Provider.of<QualityListProvide>(context,
+                                    listen: false)
+                                .setQualityList(data.data);
+                          }
+                        });
                         //登录成功查询轮播图list
                         querySwiperImageList(token).then((value) {
                           var resultData = value.data["resultdata"];
