@@ -18,8 +18,8 @@ class _ChangePwdPageState extends State<ChangePwdPage> {
   FocusNode _focusNodePassWord = FocusNode();
   //用户名输入框控制器，监听用户名输入框操作
   TextEditingController _passWordController = TextEditingController();
-//表单状态
-  GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  //表单状态
+  GlobalKey<FormState> _formChangePwdKey = GlobalKey<FormState>();
 
   var _password = ""; //密码
   var _isShowPwd = false; //是否显示密码
@@ -88,7 +88,7 @@ class _ChangePwdPageState extends State<ChangePwdPage> {
           borderRadius: BorderRadius.all(Radius.circular(8)),
           color: Colors.white),
       child: Form(
-        key: _formKey,
+        key: _formChangePwdKey,
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
@@ -144,8 +144,8 @@ class _ChangePwdPageState extends State<ChangePwdPage> {
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
           onPressed: () {
             _focusNodePassWord.unfocus();
-            _formKey.currentState.save();
-            if (_formKey.currentState.validate()) {
+            _formChangePwdKey.currentState.save();
+            if (_formChangePwdKey.currentState.validate()) {
               querySharedPerferences("token").then((token) => {
                     userRevisePassword(token, _password).then((value) {
                       ReturnModel returnModel =

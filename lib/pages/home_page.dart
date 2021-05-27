@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:thzz_project_management/pages/productionschedule_page.dart';
 import 'package:thzz_project_management/provide/swiperimagelist_provide.dart';
 import 'package:thzz_project_management/routers/application.dart';
+import 'package:thzz_project_management/untils/common.dart';
 
 class HomePage extends StatefulWidget {
   HomePage({Key key}) : super(key: key);
@@ -14,18 +15,26 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  String projectName="";
+  @override
+  void initState() {
+    super.initState();
+    if (mounted) {
+      Future.delayed(
+          Duration.zero,
+          () => setState(() {
+                getCached();
+              }));
+    }
+  }
+
+  getCached() async {
+    projectName = await querySharedPerferences("projectName");
+  }
 
   @override
   Widget build(BuildContext context) {
-    //测试数据
-    // var swiperImagelist = [];
-    // swiperImagelist.add("lib/images/swip1.jpg");
-    // swiperImagelist.add("lib/images/swip2.jpg");
-    // swiperImagelist.add("lib/images/swip3.jpg");
-    // swiperImagelist.add("lib/images/swip4.jpg");
-    // swiperImagelist.add("lib/images/swip5.jpg");
-
- var swiperImagelist =
+    var swiperImagelist =
         Provider.of<SwiperImageListProvide>(context, listen: false)
             .swiperImageList
             .data;
@@ -53,7 +62,7 @@ class _HomePageState extends State<HomePage> {
                 ],
               ),
             ),
-            title: Text("漳州项目管理平台")),
+            title: Text(projectName)),
         body: Container(
             decoration: BoxDecoration(
               image: DecorationImage(

@@ -180,8 +180,9 @@ class _MyProjectPageState extends State<MyProjectPage> {
                                 onPressed: () {
                                   ///退出移除本地缓存
                                   removeAllSharedPreferences();
-                                  return Application.router
-                                      .navigateTo(context, "/login");
+                                  return Application.router.navigateTo(
+                                      context, "/login",
+                                      clearStack: true);
                                 },
                                 child: Text("确定")),
                           ],

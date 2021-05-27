@@ -38,7 +38,7 @@ getComponentStateList(String token) async {
 }
 
 //获取质量问题统计
-getQualitySumgList(String token) async {
+getQualitySumList(String token) async {
   Map<String, dynamic> queryParameters = {"token": token};
   return await get(Config.getQualitySumListUrl,
       queryParameters: queryParameters);

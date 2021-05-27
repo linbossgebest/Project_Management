@@ -233,7 +233,7 @@ class _LoginPageState extends State<LoginPage> {
                         var projectName = userInfo.projectName; //项目名称
                         var projectDescribe = userInfo.projectDescribe; //项目描述
                         //获取首页展示的质量问题报表数据
-                        getQualitySumgList(token).then((value) {
+                        getQualitySumList(token).then((value) {
                           var resultData = value.data["resultdata"];
                           if (resultData != null) {
                             var data = QualityListModel.fromJson(resultData);
@@ -262,10 +262,11 @@ class _LoginPageState extends State<LoginPage> {
                             addSharedPreferences(
                                 "projectDescribe", projectDescribe);
                             //print(returnModel.resultdata["token"]);
-                            initProjectFileList(context);
+                            initProjectFileList(this.context);
 
-                            return Application.router
-                                .navigateTo(context, "/tabs"); //路由跳转
+                            return Application.router.navigateTo(
+                                context, "/tabs",
+                                replace: true); //路由跳转
                           }
                         });
                       }

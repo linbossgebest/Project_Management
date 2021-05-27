@@ -166,42 +166,44 @@ Widget _custom(data, ControlType controlType, {isEnabled}) {
 }
 
 initProjectFileList(dynamic context) async {
-  String token = await querySharedPerferences("token");
-  var cachedWorkPositionValue =
-      await querySharedPerferences("workPositionValue");
-  var cachedComponentValue = await querySharedPerferences("componentValue");
-  var cachedComponentCode = await querySharedPerferences("componentCode");
-  if (cachedWorkPositionValue == null &&
-      cachedComponentValue == null &&
-      cachedComponentCode == null) {
-    getWorkPositionList(token).then((value) {
-      //获取工程部位列表
-      var resultData = value.data["resultdata"];
-      //workPositionlist = WorkPositionListModel([]);
-      if (resultData != null) {
-        var data = WorkPositionListModel.fromJson(resultData);
-        var workPositionValue = data.data[0].workPositionName;
-        var workPositionCode = data.data[0].workPositionCode;
-        Provider.of<ProjectProgressProvide>(context, listen: false)
-            .setInitWorkPositionList(data.data);
-        Provider.of<ProjectProgressProvide>(context, listen: false)
-            .setWorkPositionValue(workPositionValue);
-        Provider.of<ProjectProgressProvide>(context, listen: false)
-            .setWorkPositionCode(workPositionCode);
+  if (context != null) {
+    String token = await querySharedPerferences("token");
+    var cachedWorkPositionValue =
+        await querySharedPerferences("workPositionValue");
+    var cachedComponentValue = await querySharedPerferences("componentValue");
+    var cachedComponentCode = await querySharedPerferences("componentCode");
+    if (cachedWorkPositionValue == null &&
+        cachedComponentValue == null &&
+        cachedComponentCode == null) {
+      getWorkPositionList(token).then((value) {
+        //获取工程部位列表
+        var resultData = value.data["resultdata"];
+        //workPositionlist = WorkPositionListModel([]);
+        if (resultData != null) {
+          var data = WorkPositionListModel.fromJson(resultData);
+          var workPositionValue = data.data[0].workPositionName;
+          var workPositionCode = data.data[0].workPositionCode;
+          Provider.of<ProjectProgressProvide>(context, listen: false)
+              .setInitWorkPositionList(data.data);
+          Provider.of<ProjectProgressProvide>(context, listen: false)
+              .setWorkPositionValue(workPositionValue);
+          Provider.of<ProjectProgressProvide>(context, listen: false)
+              .setWorkPositionCode(workPositionCode);
 
-        getComponentList(token, workPositionCode).then((value) {
-          var resultData = value.data["resultdata"];
-          if (resultData != null) {
-            var data = ComponentListModel.fromJson(resultData);
-            Provider.of<ProjectProgressProvide>(context, listen: false)
-                .setInitComponentList(data.data);
-            Provider.of<ProjectProgressProvide>(context, listen: false)
-                .setComponentValue(data.data[0].componentName);
-            Provider.of<ProjectProgressProvide>(context, listen: false)
-                .setComponentCode(data.data[0].componentCode.toString());
-          }
-        });
-      }
-    });
+          getComponentList(token, workPositionCode).then((value) {
+            var resultData = value.data["resultdata"];
+            if (resultData != null) {
+              var data = ComponentListModel.fromJson(resultData);
+              Provider.of<ProjectProgressProvide>(context, listen: false)
+                  .setInitComponentList(data.data);
+              Provider.of<ProjectProgressProvide>(context, listen: false)
+                  .setComponentValue(data.data[0].componentName);
+              Provider.of<ProjectProgressProvide>(context, listen: false)
+                  .setComponentCode(data.data[0].componentCode.toString());
+            }
+          });
+        }
+      });
+    }
   }
 }

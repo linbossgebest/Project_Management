@@ -44,15 +44,17 @@ class _LoadingPageState extends State<LoadingPage> {
             "lib/images/background.jpg",
             fit: BoxFit.fill,
           ),
-          Center(
+          Container(
+             padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+              child: Center(
             child: Text(
-              "欢迎使用漳州项目管理平台",
+              "欢迎使用同豪项目管理平台",
               style: TextStyle(
                   color: Colors.white,
-                  fontSize: 30,
+                  fontSize: 28,
                   decoration: TextDecoration.none),
             ),
-          )
+          ))
         ],
       ),
     );
