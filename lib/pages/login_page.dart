@@ -233,15 +233,15 @@ class _LoginPageState extends State<LoginPage> {
                         var projectName = userInfo.projectName; //项目名称
                         var projectDescribe = userInfo.projectDescribe; //项目描述
                         //获取首页展示的质量问题报表数据
-                        getQualitySumList(token).then((value) {
-                          var resultData = value.data["resultdata"];
-                          if (resultData != null) {
-                            var data = QualityListModel.fromJson(resultData);
-                            Provider.of<QualityListProvide>(context,
-                                    listen: false)
-                                .setQualityList(data.data);
-                          }
-                        });
+                        // getQualitySumList(token).then((value) {
+                        //   var resultData = value.data["resultdata"];
+                        //   if (resultData != null) {
+                        //     var data = QualityListModel.fromJson(resultData);
+                        //     Provider.of<QualityListProvide>(context,
+                        //             listen: false)
+                        //         .setQualityList(data.data);
+                        //   }
+                        // });
                         //登录成功查询轮播图list
                         querySwiperImageList(token).then((value) {
                           var resultData = value.data["resultdata"];

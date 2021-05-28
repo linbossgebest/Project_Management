@@ -1,13 +1,6 @@
 import 'package:thzz_project_management/config/configure.dart';
 import 'common_service.dart';
 
-//获取项目现场上传图片信息
-getProjectImages(String token) async {
-  Map<String, dynamic> queryParameters = {"token": token};
-  return await get(Config.getProjectImageInfoUrl,
-      queryParameters: queryParameters);
-}
-
 //进度填报和上传现场图片
 addProjectProgress(dynamic data) async {
   return await post(Config.addProjectProgressoUrl, data: data);
@@ -50,7 +43,7 @@ queryProjectComponentList(String token, String componentName) async {
     "token": token,
     "componentName": componentName
   };
-  return await get(Config.getQualitySumListUrl,
+  return await get(Config.getProjectComponentListUrl,
       queryParameters: queryParameters);
 }
 
@@ -61,5 +54,24 @@ queryProjectComponentDetai(String token, String componentName) async {
     "componentName": componentName
   };
   return await get(Config.getComponentDetailUrl,
+      queryParameters: queryParameters);
+}
+
+//获取项目现场上传图片信息
+getProjectImages(
+    String token, String componentName, String componentState) async {
+  Map<String, dynamic> queryParameters = {
+    "token": token,
+    "componentName": componentName,
+    "componentState": componentState
+  };
+  return await get(Config.getProjectImageInfoUrl,
+      queryParameters: queryParameters);
+}
+
+//进度统计查询
+getGetScheduleCost(String token) async {
+  Map<String, dynamic> queryParameters = {"token": token};
+  return await get(Config.getScheduleCostUrl,
       queryParameters: queryParameters);
 }

@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:provider/provider.dart';
+import 'package:thzz_project_management/models/swiperimage_model.dart';
 import 'package:thzz_project_management/pages/productionschedule_page.dart';
 import 'package:thzz_project_management/provide/swiperimagelist_provide.dart';
 import 'package:thzz_project_management/routers/application.dart';
+import 'package:thzz_project_management/services/getswiperimages_service.dart';
 import 'package:thzz_project_management/untils/common.dart';
 
 class HomePage extends StatefulWidget {
@@ -15,7 +17,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  String projectName="";
+  String projectName = "";
   @override
   void initState() {
     super.initState();
@@ -24,12 +26,26 @@ class _HomePageState extends State<HomePage> {
           Duration.zero,
           () => setState(() {
                 getCached();
+                getSwiperImageList();
               }));
     }
   }
 
   getCached() async {
     projectName = await querySharedPerferences("projectName");
+  }
+
+  getSwiperImageList() async {
+    var token = await querySharedPerferences("token");
+    querySwiperImageList(token).then((value) {
+      var resultData = value.data["resultdata"];
+      if (resultData != null) {
+        var data = SwiperImageListModel.fromJson(resultData);
+
+        Provider.of<SwiperImageListProvide>(context, listen: false)
+            .setImageList(data.data);
+      }
+    });
   }
 
   @override
@@ -96,7 +112,7 @@ class _HomePageState extends State<HomePage> {
                       )),
                 ),
                 Container(
-                  color: Colors.white,
+                  color: Colors.white.withAlpha(200),
                   width: ScreenUtil().setWidth(730),
                   height: ScreenUtil().setHeight(500),
                   margin: EdgeInsets.fromLTRB(10, 10, 10, 10),

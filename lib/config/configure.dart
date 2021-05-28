@@ -46,4 +46,8 @@ class Config {
   //构件详细查询
   static const String getComponentDetailUrl =
       ipAddress + "/ProjectFile/GetComponentDetail";
+
+  //进度统计查询
+  static const String getScheduleCostUrl =
+      ipAddress + "/ProjectFile/GetScheduleCost";
 }

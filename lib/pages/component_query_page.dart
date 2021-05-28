@@ -1,6 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:provider/provider.dart';
+import 'package:thzz_project_management/models/componentcurrentinfo_model.dart';
+import 'package:thzz_project_management/models/componentinfo_model.dart';
+import 'package:thzz_project_management/provide/componentcurrentinfolist_provide.dart';
+import 'package:thzz_project_management/provide/componentinfolist_provide.dart';
 import 'package:thzz_project_management/routers/application.dart';
+import 'package:thzz_project_management/services/projectfile_service.dart';
+import 'package:thzz_project_management/untils/common.dart';
 
 class ComponentQueryPage extends StatefulWidget {
   ComponentQueryPage({Key key}) : super(key: key);
@@ -10,6 +17,41 @@ class ComponentQueryPage extends StatefulWidget {
 }
 
 class _ComponentQueryPageState extends State<ComponentQueryPage> {
+  String _componentName = "";
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  getComponentCurrentInfo(String componentName) async {
+    String token = await querySharedPerferences("token");
+
+    queryProjectComponentList(token, componentName).then((value) {
+      var resultData = value.data["resultdata"];
+      if (resultData != null) {
+        var data = ComponentCurrentInfoListModel.fromJson(resultData);
+        //componentStateList = data;
+        Provider.of<ComponentCurrentInfoListProvide>(context, listen: false)
+            .setComponentInfoList(data.data);
+      }
+    });
+  }
+
+  getComponentDetailInfo(String componentName) async {
+    String token = await querySharedPerferences("token");
+
+    queryProjectComponentDetai(token, componentName).then((value) {
+      var resultData = value.data["resultdata"];
+      if (resultData != null) {
+        var data = ComponentInfoListModel.fromJson(resultData);
+        //componentStateList = data;
+        Provider.of<ComponentInfoListProvide>(context, listen: false)
+            .setComponentInfoList(data.data);
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return ScreenUtilInit(
@@ -32,8 +74,12 @@ class _ComponentQueryPageState extends State<ComponentQueryPage> {
                       decoration: InputDecoration(
                           contentPadding:
                               const EdgeInsets.symmetric(vertical: 4.0),
-                          hintText: "请输入项目名称",
+                          hintText: "请输入构件名称",
                           border: OutlineInputBorder()),
+                      onChanged: (value) {
+                        //print(value);
+                        _componentName = value;
+                      },
                     ),
                   ),
                   SizedBox(
@@ -44,7 +90,11 @@ class _ComponentQueryPageState extends State<ComponentQueryPage> {
                     child: RaisedButton.icon(
                       textColor: Colors.white,
                       color: Colors.blue[500],
-                      onPressed: () {},
+                      onPressed: () {
+                        setState(() {
+                          getComponentCurrentInfo(_componentName);
+                        });
+                      },
                       icon: Icon(Icons.search),
                       label: Text('查询'),
                     ),
@@ -52,48 +102,82 @@ class _ComponentQueryPageState extends State<ComponentQueryPage> {
                 ],
               ),
               Container(
-                  child: DataTable(
-                showCheckboxColumn: false,
-                columns: [
-                  DataColumn(
-                      label: Text('构件名称',
-                          style: TextStyle(fontSize: ScreenUtil().setSp(30)))),
-                  DataColumn(
-                      label: Text('当前状态',
-                          style: TextStyle(fontSize: ScreenUtil().setSp(30)))),
-                  DataColumn(
-                      label: Text('开始日期',
-                          style: TextStyle(fontSize: ScreenUtil().setSp(30)))),
-                ],
-                rows: [
-                  DataRow(
-                      cells: [
-                        DataCell(Text('构件test1')),
-                        DataCell(Text('前期')),
-                        DataCell(Text('2021-4-27')),
-                      ],
-                      onSelectChanged: (selected) {
-                        print("object1");
-                        return Application.router
-                            .navigateTo(context, "/componentQueryDetail");
-                      }),
-                  DataRow(
-                      cells: [
-                        DataCell(Text('构件test2')),
-                        DataCell(Text('支模')),
-                        DataCell(Text('2021-4-27')),
-                      ],
-                      onSelectChanged: (selected) {
-                        print("object2");
-                        return Application.router
-                            .navigateTo(context, "/componentQueryDetail");
-                      }),
-                ],
-              ))
+                child: FutureBuilder(
+                  future: getComponentCurrentInfo(_componentName),
+                  builder: (BuildContext context, AsyncSnapshot snapshot) {
+                    if (snapshot.connectionState == ConnectionState.done) {
+                      return Consumer<ComponentCurrentInfoListProvide>(
+                        builder:
+                            (context, componentCurrentInfoListProivide, child) {
+                          return componentCurrentInfoListProivide
+                                      .componentInfoList.data.length ==
+                                  0
+                              ? Center(
+                                  child: Text("未查找到该构件信息"),
+                                )
+                              : Container(
+                                  child: DataTable(
+                                    showCheckboxColumn: false,
+                                    columns: [
+                                      //标题名称
+                                      DataColumn(
+                                          label: Text('构件名称',
+                                              style: TextStyle(
+                                                  fontSize:
+                                                      ScreenUtil().setSp(30)))),
+                                      DataColumn(
+                                          label: Text('当前状态',
+                                              style: TextStyle(
+                                                  fontSize:
+                                                      ScreenUtil().setSp(30)))),
+                                      DataColumn(
+                                          label: Text('开始日期',
+                                              style: TextStyle(
+                                                  fontSize:
+                                                      ScreenUtil().setSp(30)))),
+                                    ],
+                                    rows: _setDataRows(
+                                        componentCurrentInfoListProivide
+                                            .componentInfoList.data),
+                                  ),
+                                );
+                        },
+                      );
+                    } else {
+                      return Center(
+                        child: CircularProgressIndicator(), //加载等待动画
+                      );
+                    }
+                  },
+                ),
+              ),
             ],
           ),
         ),
       ),
     );
+  }
+
+  List<DataRow> _setDataRows(List<ComponentCurrentInfoModel> componentList) {
+    List<DataRow> list = [];
+
+    componentList.forEach((componentItem) {
+      DataRow dataRow = DataRow(
+          cells: [
+            DataCell(Text(componentItem.componentName)),
+            DataCell(Text(componentItem.componentNowState)),
+            DataCell(Text(componentItem.startTime)),
+          ],
+          onSelectChanged: (selected) {
+            // print("object2");
+            getComponentDetailInfo(componentItem.componentName);
+            return Application.router
+                .navigateTo(context, "/componentQueryDetail");
+          });
+
+      list.add(dataRow);
+    });
+
+    return list;
   }
 }

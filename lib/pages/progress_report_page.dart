@@ -47,14 +47,22 @@ class _ProcessReportState extends State<ProcessReportPage> {
 
   @override
   void initState() {
+    // if (mounted) {
+    //   Future.delayed(
+    //       Duration.zero,
+    //       () => setState(() {
+    //             getCached();
+    //             initProjectFileList(context);
+    //             getComponentState();
+    //           }));
+    // }
+
     if (mounted) {
-      Future.delayed(
-          Duration.zero,
-          () => setState(() {
-                getCached();
-                initProjectFileList(context);
-                getComponentState();
-              }));
+      setState(() {
+        getCached();
+        initProjectFileList(this.context);
+        getComponentState();
+      });
     }
 
     super.initState();
@@ -200,20 +208,23 @@ class _ProcessReportState extends State<ProcessReportPage> {
                                   //items: _workPositionDropdownItems(),
                                   onChanged: (newValue) async {
                                     removeCached().then((value) {
-                                      setState(() {
-                                        projectProgressProvide
-                                            .workPositionValue = newValue;
-                                        projectProgressProvide
-                                                .workPositionCode =
-                                            projectProgressProvide
-                                                .workPositionlist
-                                                .firstWhere((element) =>
-                                                    element.workPositionName ==
-                                                    newValue)
-                                                .workPositionCode;
-                                        getComponent(projectProgressProvide
-                                            .workPositionCode);
-                                      });
+                                      if (mounted) {
+                                        setState(() {
+                                          projectProgressProvide
+                                              .workPositionValue = newValue;
+                                          projectProgressProvide
+                                                  .workPositionCode =
+                                              projectProgressProvide
+                                                  .workPositionlist
+                                                  .firstWhere((element) =>
+                                                      element
+                                                          .workPositionName ==
+                                                      newValue)
+                                                  .workPositionCode;
+                                          getComponent(projectProgressProvide
+                                              .workPositionCode);
+                                        });
+                                      }
                                     });
                                   },
                                 ),
@@ -250,18 +261,20 @@ class _ProcessReportState extends State<ProcessReportPage> {
                                       ? cachedComponentValue
                                       : projectProgressProvide.componentValue,
                                   onChanged: (newValue) {
-                                    setState(() {
-                                      //projectProgressProvide.setComponentValue(newValue);
-                                      projectProgressProvide.componentValue =
-                                          newValue;
-                                      projectProgressProvide.componentCode =
-                                          projectProgressProvide.componentlist
-                                              .firstWhere((element) =>
-                                                  element.componentName ==
-                                                  newValue)
-                                              .componentCode
-                                              .toString();
-                                    });
+                                    if (mounted) {
+                                      setState(() {
+                                        //projectProgressProvide.setComponentValue(newValue);
+                                        projectProgressProvide.componentValue =
+                                            newValue;
+                                        projectProgressProvide.componentCode =
+                                            projectProgressProvide.componentlist
+                                                .firstWhere((element) =>
+                                                    element.componentName ==
+                                                    newValue)
+                                                .componentCode
+                                                .toString();
+                                      });
+                                    }
                                   },
                                   items: projectProgressProvide.componentlist
                                       .map((item) {
@@ -333,11 +346,13 @@ class _ProcessReportState extends State<ProcessReportPage> {
                                       ? cachedComponentState
                                       : componentStateDropdownValue,
                                   onChanged: (String newValue) {
-                                    setState(() {
-                                      componentStateDropdownValue = newValue;
-                                      cachedComponentState =
-                                          componentStateDropdownValue;
-                                    });
+                                    if (mounted) {
+                                      setState(() {
+                                        componentStateDropdownValue = newValue;
+                                        cachedComponentState =
+                                            componentStateDropdownValue;
+                                      });
+                                    }
                                   },
                                   items: projectProgressProvide
                                       .componentStatelist
@@ -406,10 +421,12 @@ class _ProcessReportState extends State<ProcessReportPage> {
                                     contentPadding: EdgeInsets.all(10.0),
                                     border: OutlineInputBorder()),
                                 onChanged: (newValue) {
-                                  setState(() {
-                                    this.description = newValue;
-                                    //print(description);
-                                  });
+                                  if (mounted) {
+                                    setState(() {
+                                      this.description = newValue;
+                                      //print(description);
+                                    });
+                                  }
                                 },
                               ),
                             )),
@@ -568,10 +585,13 @@ class _ProcessReportState extends State<ProcessReportPage> {
         builder: (context, child) {
           return Theme(data: ThemeData.light(), child: child);
         });
-    if (picked != null && picked != selectedDate)
-      setState(() {
-        selectedDate = picked;
-        print(selectedDate);
-      });
+    if (picked != null && picked != selectedDate) {
+      if (mounted) {
+        setState(() {
+          selectedDate = picked;
+          print(selectedDate);
+        });
+      }
+    }
   }
 }
