@@ -8,7 +8,7 @@ get(String url, {Map<String, dynamic> queryParameters}) async {
   try {
     // print(queryParameters["token"]);
     if (queryParameters["token"] == null) {
-      Toast.show("token已失效,请重新登录！");
+      Toast.show("用户登录已失效,请重新登录！");
       Routes.navigatorKey.currentState?.pushNamed("/login");
     } else {
       var dio = Dio();
