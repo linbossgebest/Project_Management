@@ -63,7 +63,7 @@ class _ComponentQueryPageState extends State<ComponentQueryPage> {
         ),
         body: Container(
           margin: EdgeInsets.all(5),
-          child: Column(
+          child: ListView(
             children: <Widget>[
               Row(
                 children: <Widget>[
@@ -126,17 +126,17 @@ class _ComponentQueryPageState extends State<ComponentQueryPage> {
                                           label: Text('构件名称',
                                               style: TextStyle(
                                                   fontSize:
-                                                      ScreenUtil().setSp(30)))),
+                                                      ScreenUtil().setSp(36)))),
                                       DataColumn(
                                           label: Text('当前状态',
                                               style: TextStyle(
                                                   fontSize:
-                                                      ScreenUtil().setSp(30)))),
+                                                      ScreenUtil().setSp(36)))),
                                       DataColumn(
                                           label: Text('开始日期',
                                               style: TextStyle(
                                                   fontSize:
-                                                      ScreenUtil().setSp(30)))),
+                                                      ScreenUtil().setSp(36)))),
                                     ],
                                     rows: _setDataRows(
                                         componentCurrentInfoListProivide

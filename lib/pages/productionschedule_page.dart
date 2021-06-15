@@ -14,7 +14,7 @@ class ProductionSchedulePage extends StatefulWidget {
 }
 
 class _ProductionSchedulePageState extends State<ProductionSchedulePage> {
-  List<charts.Series> seriesList;
+  List<charts.Series> seriesList=new List<charts.Series>();
 
   getProjectSchedule() async {
     String token = await querySharedPerferences("token");
@@ -41,7 +41,9 @@ class _ProductionSchedulePageState extends State<ProductionSchedulePage> {
               builder: (context, projectScheduleProvide, child) {
                 seriesList = _createProjectScheduleData(
                     projectScheduleProvide.projectSchedule);
-                return new charts.BarChart(
+                return (seriesList==null||seriesList.length==0)? Center(
+                       child: CircularProgressIndicator(), //加载等待动画
+                ): new charts.BarChart(
                   seriesList,
                   animate: false,
                   barGroupingType: charts.BarGroupingType.grouped,
@@ -68,33 +70,35 @@ class _ProductionSchedulePageState extends State<ProductionSchedulePage> {
 
   List<charts.Series<ProjectSchedule, String>> _createProjectScheduleData(
       ProjectScheduleModel projectSchedule) {
-    List<ProjectSchedule> plansData = [];
-    List<ProjectSchedule> actualData = [];
-    List xAxis = projectSchedule.xAxis;
-    List planseries = projectSchedule.planseries;
-    List actualseries = projectSchedule.actualseries;
-    if (xAxis != null) {
-      for (int i = 0; i < xAxis.length; i++) {
-        plansData.add(ProjectSchedule(xAxis[i], planseries[i]));
-        actualData.add(ProjectSchedule(xAxis[i], actualseries[i]));
-      }
+    if (projectSchedule != null) {
+      List<ProjectSchedule> plansData = [];
+      List<ProjectSchedule> actualData = [];
+      List xAxis = projectSchedule.xAxis;
+      List planseries = projectSchedule.planseries;
+      List actualseries = projectSchedule.actualseries;
+      if (xAxis != null) {
+        for (int i = 0; i < xAxis.length; i++) {
+          plansData.add(ProjectSchedule(xAxis[i], planseries[i]));
+          actualData.add(ProjectSchedule(xAxis[i], actualseries[i]));
+        }
 
-      return [
-        new charts.Series<ProjectSchedule, String>(
-          id: '实际',
-          domainFn: (ProjectSchedule ps, _) => ps.month.toString() + "月",
-          measureFn: (ProjectSchedule ps, _) => ps.series,
-          data: actualData,
-          labelAccessorFn: (ProjectSchedule ps, _) => ps.series.toString(),
-        ),
-        new charts.Series<ProjectSchedule, String>(
-          id: '计划',
-          domainFn: (ProjectSchedule ps, _) => ps.month.toString() + "月",
-          measureFn: (ProjectSchedule ps, _) => ps.series,
-          data: plansData,
-          labelAccessorFn: (ProjectSchedule ps, _) => ps.series.toString(),
-        ),
-      ];
+        return [
+          new charts.Series<ProjectSchedule, String>(
+            id: '实际',
+            domainFn: (ProjectSchedule ps, _) => ps.month.toString() + "月",
+            measureFn: (ProjectSchedule ps, _) => ps.series,
+            data: actualData,
+            labelAccessorFn: (ProjectSchedule ps, _) => ps.series.toString(),
+          ),
+          new charts.Series<ProjectSchedule, String>(
+            id: '计划',
+            domainFn: (ProjectSchedule ps, _) => ps.month.toString() + "月",
+            measureFn: (ProjectSchedule ps, _) => ps.series,
+            data: plansData,
+            labelAccessorFn: (ProjectSchedule ps, _) => ps.series.toString(),
+          ),
+        ];
+      }
     }
   }
 }

@@ -21,7 +21,7 @@ class _AboutUsPageState extends State<AboutUsPage> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             ListTile(
-              leading: Icon(Icons.message),
+              leading: Icon(Icons.message,color: Colors.blue),
               title: Text("公司介绍"),
             ),
             Divider(
@@ -29,7 +29,7 @@ class _AboutUsPageState extends State<AboutUsPage> {
               color: Colors.grey,
             ),
             ListTile(
-              leading: Icon(Icons.message),
+              leading: Icon(Icons.message,color: Colors.blue),
               title: Text("公司优势"),
             ),
             Divider(
@@ -37,7 +37,7 @@ class _AboutUsPageState extends State<AboutUsPage> {
               color: Colors.grey,
             ),
             ListTile(
-              leading: Icon(Icons.message),
+              leading: Icon(Icons.message,color: Colors.blue),
               title: Text("联系我们"),
             ),
             Divider(

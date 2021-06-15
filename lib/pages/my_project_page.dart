@@ -1,3 +1,4 @@
+import 'package:charts_flutter/flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
@@ -53,7 +54,7 @@ class _MyProjectPageState extends State<MyProjectPage> {
           children: [
             Container(
               padding: EdgeInsets.all(20),
-              height: ScreenUtil().setHeight(200),
+              height: ScreenUtil().setHeight(250),
               //color: Colors.blue,
               child: ListTile(
                 leading: ClipOval(
@@ -72,7 +73,7 @@ class _MyProjectPageState extends State<MyProjectPage> {
             Container(
                 child: ExpansionTile(
               title: Text("我的项目"),
-              leading: Icon(Icons.inbox),
+              leading: Icon(Icons.inbox,color: Colors.blue),
               children: <Widget>[
                 ListTile(
                   title: Text('项目名称'),
@@ -108,7 +109,7 @@ class _MyProjectPageState extends State<MyProjectPage> {
                       .navigateTo(context, "/historyOperate");
                 },
                 child: ListTile(
-                  leading: Icon(Icons.history),
+                  leading: Icon(Icons.history,color: Colors.blue),
                   title: Text("历史操作"),
                   trailing: Icon(Icons.keyboard_arrow_right),
                 ),
@@ -124,7 +125,7 @@ class _MyProjectPageState extends State<MyProjectPage> {
                   return Application.router.navigateTo(context, "/aboutUs");
                 },
                 child: ListTile(
-                    leading: Icon(Icons.info),
+                    leading: Icon(Icons.info,color: Colors.blue),
                     title: Text("关于我们"),
                     trailing: InkWell(
                       child: Icon(Icons.keyboard_arrow_right),
@@ -145,7 +146,7 @@ class _MyProjectPageState extends State<MyProjectPage> {
                   return Application.router.navigateTo(context, "/setting");
                 },
                 child: ListTile(
-                  leading: Icon(Icons.settings),
+                  leading: Icon(Icons.settings,color: Colors.blue),
                   title: Text("设置"),
                   trailing: Icon(Icons.keyboard_arrow_right),
                 ),
@@ -190,7 +191,7 @@ class _MyProjectPageState extends State<MyProjectPage> {
                       });
                 },
                 child: ListTile(
-                  leading: Icon(Icons.person_outline),
+                  leading: Icon(Icons.person_outline,color: Colors.blue),
                   title: Text("退出登录"),
                 ),
               ),

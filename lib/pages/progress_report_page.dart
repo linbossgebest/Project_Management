@@ -573,11 +573,13 @@ class _ProcessReportState extends State<ProcessReportPage> {
   }
 
   _selectDate(BuildContext context) async {
+    Locale myLocale = Localizations.localeOf(context);
     final DateTime picked = await showDatePicker(
         context: context,
         initialDate: selectedDate,
         firstDate: DateTime(2000),
         lastDate: DateTime(2025),
+        locale: myLocale,
         helpText: "日历",
         cancelText: "取消",
         confirmText: "确定",

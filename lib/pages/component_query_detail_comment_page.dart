@@ -15,7 +15,7 @@ class ComponentQueryDetailCommentPage extends StatefulWidget {
 
 class _ComponentQueryDetailCommentPageState
     extends State<ComponentQueryDetailCommentPage> {
-  String description = "";
+
   @override
   Widget build(BuildContext context) {
     return ScreenUtilInit(
@@ -26,57 +26,62 @@ class _ComponentQueryDetailCommentPageState
           ),
           body: Consumer<ProjectImageInfoProvide>(
               builder: (context, projectImageInfoProivide, child) {
-            description = projectImageInfoProivide.projectImageInfo.description;
-            return Container(
-              margin: EdgeInsets.all(10),
-              child: ListView(
-                children: <Widget>[
-                  Container(
-                      margin: EdgeInsets.all(10),
-                      alignment: Alignment.centerLeft,
-                      child: Text(description == null
-                          ? "施工描述："
-                          : "施工描述：" + description)),
-                  Container(
-                    margin: EdgeInsets.fromLTRB(5, 10, 5, 0),
-                    child: GridView.builder(
-                      shrinkWrap: true, //解决 listview 嵌套报错
-                      physics: NeverScrollableScrollPhysics(), //禁用滑动事件
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                          //横轴元素个数
-                          crossAxisCount: 3,
-                          //纵轴间距
-                          mainAxisSpacing: 10.0,
-                          //横轴间距
-                          crossAxisSpacing: 10.0,
-                          //子组件宽高长度比例
-                          childAspectRatio: 1.0),
-                      itemBuilder: (BuildContext context, int index) {
-                        return GestureDetector(
-                          onTap: () {
-                            Navigator.of(context).push(new FadeRoute(
-                                page: PhotoViewGalleryScreen(
-                              images: projectImageInfoProivide
-                                  .projectImageInfo.imgPaths, //传入图片list
-                              index: index, //传入当前点击的图片的index
-                              heroTag: projectImageInfoProivide.projectImageInfo
-                                  .imgPaths[index], //传入当前点击的图片的hero tag （可选）
-                            )));
-                          },
-                          child: Image.network(
-                            projectImageInfoProivide
-                                .projectImageInfo.imgPaths[index],
-                            fit: BoxFit.fill,
-                          ),
-                        );
-                      },
-                      itemCount: projectImageInfoProivide
-                          .projectImageInfo.imgPaths.length,
-                    ),
+            return projectImageInfoProivide.projectImageInfo == null
+                ? Center(
+                    child: CircularProgressIndicator(), //加载等待动画
                   )
-                ],
-              ),
-            );
+                : Container(
+                    margin: EdgeInsets.all(10),
+                    child: ListView(
+                      children: <Widget>[
+                        Container(
+                            margin: EdgeInsets.all(10),
+                            alignment: Alignment.centerLeft,
+                            child: projectImageInfoProivide.projectImageInfo.description == null
+                                ? Text("施工描述：")
+                                : Text("施工描述：" + projectImageInfoProivide.projectImageInfo.description)),
+                        Container(
+                          margin: EdgeInsets.fromLTRB(5, 10, 5, 0),
+                          child: GridView.builder(
+                            shrinkWrap: true, //解决 listview 嵌套报错
+                            physics: NeverScrollableScrollPhysics(), //禁用滑动事件
+                            gridDelegate:
+                                SliverGridDelegateWithFixedCrossAxisCount(
+                                    //横轴元素个数
+                                    crossAxisCount: 3,
+                                    //纵轴间距
+                                    mainAxisSpacing: 10.0,
+                                    //横轴间距
+                                    crossAxisSpacing: 10.0,
+                                    //子组件宽高长度比例
+                                    childAspectRatio: 1.0),
+                            itemBuilder: (BuildContext context, int index) {
+                              return GestureDetector(
+                                onTap: () {
+                                  Navigator.of(context).push(new FadeRoute(
+                                      page: PhotoViewGalleryScreen(
+                                    images: projectImageInfoProivide
+                                        .projectImageInfo.imgPaths, //传入图片list
+                                    index: index, //传入当前点击的图片的index
+                                    heroTag: projectImageInfoProivide
+                                            .projectImageInfo.imgPaths[
+                                        index], //传入当前点击的图片的hero tag （可选）
+                                  )));
+                                },
+                                child: Image.network(
+                                  projectImageInfoProivide
+                                      .projectImageInfo.imgPaths[index],
+                                  fit: BoxFit.fill,
+                                ),
+                              );
+                            },
+                            itemCount: projectImageInfoProivide
+                                .projectImageInfo.imgPaths.length,
+                          ),
+                        )
+                      ],
+                    ),
+                  );
           })),
     );
   }

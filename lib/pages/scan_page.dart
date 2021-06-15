@@ -4,6 +4,7 @@ import 'package:flutter_qr_reader/qrcode_reader_view.dart';
 import 'package:provider/provider.dart';
 import 'package:thzz_project_management/models/componentcurrentinfo_model.dart';
 import 'package:thzz_project_management/provide/componentcurrentinfolist_provide.dart';
+import 'package:thzz_project_management/provide/current_index.dart';
 import 'package:thzz_project_management/routers/application.dart';
 import 'package:thzz_project_management/services/projectfile_service.dart';
 import 'package:thzz_project_management/untils/common.dart';
@@ -18,6 +19,7 @@ class ScanPage extends StatefulWidget {
 
 class _ScanViewState extends State<ScanPage> {
   GlobalKey<QrcodeReaderViewState> _key = GlobalKey();
+
   @override
   void initState() {
     super.initState();
@@ -63,8 +65,11 @@ class _ScanViewState extends State<ScanPage> {
                 child: Text("确认"),
                 onPressed: () {
                   getComponentCurrentInfo(data);
-                  Application.router
-                      .navigateTo(context, "/componentQuery", replace: true); //路由跳转 构件查看页面
+                  // Application.router.navigateTo(context, "/componentQuery",
+                  //     replace: true); //路由跳转 构件查看页面
+                  Provider.of<CurrentIndexProvide>(context, listen: false)
+                      .currentIndex = 3;
+                  Application.router.navigateTo(context, "/tabs"); //路由跳转 构件查看页面
                 })
           ],
         );

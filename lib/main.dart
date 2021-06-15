@@ -1,5 +1,6 @@
 import 'package:fluro/fluro.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:thzz_project_management/pages/tabs_page.dart';
 import 'package:thzz_project_management/provide/componentcurrentinfolist_provide.dart';
@@ -82,6 +83,16 @@ class MyApp extends StatelessWidget {
         },
         initialRoute: "/loading",
         home: Tabs(),
+        localizationsDelegates: [
+        //此处
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+      ],
+      supportedLocales: [
+        //此处
+        const Locale('zh', 'CH'),
+        const Locale('en', 'US'),
+      ],
       ),
     );
   }

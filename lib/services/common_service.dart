@@ -16,6 +16,7 @@ get(String url, {Map<String, dynamic> queryParameters}) async {
       Response response = await dio.get(url, queryParameters: queryParameters);
       if (response.statusCode == 200) {
         ReturnModel returnModel = ReturnModel.fromJson(response.data);
+        print(response.data);
         if (returnModel.type == 3 || returnModel.message.contains("超时")) {
           Toast.show(returnModel.message);
           Routes.navigatorKey.currentState?.pushNamed("/login");

@@ -4,6 +4,7 @@ import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:provider/provider.dart';
 import 'package:thzz_project_management/models/swiperimage_model.dart';
 import 'package:thzz_project_management/pages/productionschedule_page.dart';
+import 'package:thzz_project_management/pages/swiper_page.dart';
 import 'package:thzz_project_management/provide/swiperimagelist_provide.dart';
 import 'package:thzz_project_management/routers/application.dart';
 import 'package:thzz_project_management/services/getswiperimages_service.dart';
@@ -92,29 +93,12 @@ class _HomePageState extends State<HomePage> {
                   width: ScreenUtil().setWidth(730),
                   // margin: EdgeInsets.all(10),
                   padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
-                  child: AspectRatio(
-                      aspectRatio: 16 / 9,
-                      child: Swiper(
-                        key: UniqueKey(),
-                        //轮播图
-                        itemBuilder: (BuildContext context, int index) {
-                          //print(swiperImagelist[index].filePath);
-                          return Image.network(
-                            //获取图片
-                            swiperImagelist[index].filePath,
-                            fit: BoxFit.fill,
-                          );
-                        },
-                        autoplay: true,
-                        itemCount: swiperImagelist.length,
-                        pagination: new SwiperPagination(),
-                        control: new SwiperControl(), //左右箭头
-                      )),
+                  child:SwiperPage()
                 ),
                 Container(
                   color: Colors.white.withAlpha(200),
                   width: ScreenUtil().setWidth(730),
-                  height: ScreenUtil().setHeight(500),
+                  height: ScreenUtil().setHeight(600),
                   margin: EdgeInsets.fromLTRB(10, 10, 10, 10),
                   padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
                   child: ProductionSchedulePage(),
