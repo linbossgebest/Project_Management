@@ -116,6 +116,8 @@ class _ComponentQueryPageState extends State<ComponentQueryPage> {
                                   child: Text("未查找到该构件信息"),
                                 )
                               : Container(
+                                  child: SingleChildScrollView(
+                                  scrollDirection: Axis.horizontal,
                                   child: DataTable(
                                     showCheckboxColumn: false,
                                     columns: [
@@ -140,7 +142,7 @@ class _ComponentQueryPageState extends State<ComponentQueryPage> {
                                         componentCurrentInfoListProivide
                                             .componentInfoList.data),
                                   ),
-                                );
+                                ));
                         },
                       );
                     } else {

@@ -48,6 +48,8 @@ class _ComponentQueryDetailPageState extends State<ComponentQueryDetailPage> {
               Consumer<ComponentInfoListProvide>(
                   builder: (context, componentInfoListProivide, child) {
                 return Container(
+                    child: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
                   child: DataTable(
                     showCheckboxColumn: false,
                     columns: [
@@ -67,7 +69,7 @@ class _ComponentQueryDetailPageState extends State<ComponentQueryDetailPage> {
                     rows: _setDataRows(
                         componentInfoListProivide.componentInfoList.data),
                   ),
-                );
+                ));
               }),
             ],
           ),

@@ -73,27 +73,29 @@ class _ProductionSchedulePageState extends State<ProductionSchedulePage> {
     List xAxis = projectSchedule.xAxis;
     List planseries = projectSchedule.planseries;
     List actualseries = projectSchedule.actualseries;
-    for (int i = 0; i < xAxis.length; i++) {
-      plansData.add(ProjectSchedule(xAxis[i], planseries[i]));
-      actualData.add(ProjectSchedule(xAxis[i], actualseries[i]));
-    }
+    if (xAxis != null) {
+      for (int i = 0; i < xAxis.length; i++) {
+        plansData.add(ProjectSchedule(xAxis[i], planseries[i]));
+        actualData.add(ProjectSchedule(xAxis[i], actualseries[i]));
+      }
 
-    return [
-      new charts.Series<ProjectSchedule, String>(
-        id: '实际',
-        domainFn: (ProjectSchedule ps, _) => ps.month.toString() + "月",
-        measureFn: (ProjectSchedule ps, _) => ps.series,
-        data: actualData,
-        labelAccessorFn: (ProjectSchedule ps, _) => ps.series.toString(),
-      ),
-      new charts.Series<ProjectSchedule, String>(
-        id: '计划',
-        domainFn: (ProjectSchedule ps, _) => ps.month.toString() + "月",
-        measureFn: (ProjectSchedule ps, _) => ps.series,
-        data: plansData,
-        labelAccessorFn: (ProjectSchedule ps, _) => ps.series.toString(),
-      ),
-    ];
+      return [
+        new charts.Series<ProjectSchedule, String>(
+          id: '实际',
+          domainFn: (ProjectSchedule ps, _) => ps.month.toString() + "月",
+          measureFn: (ProjectSchedule ps, _) => ps.series,
+          data: actualData,
+          labelAccessorFn: (ProjectSchedule ps, _) => ps.series.toString(),
+        ),
+        new charts.Series<ProjectSchedule, String>(
+          id: '计划',
+          domainFn: (ProjectSchedule ps, _) => ps.month.toString() + "月",
+          measureFn: (ProjectSchedule ps, _) => ps.series,
+          data: plansData,
+          labelAccessorFn: (ProjectSchedule ps, _) => ps.series.toString(),
+        ),
+      ];
+    }
   }
 }
 

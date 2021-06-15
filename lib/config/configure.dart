@@ -1,5 +1,7 @@
 class Config {
-  static const ipAddress = "http://192.168.6.53:44999/api";
+  //static const ipAddress = "http://192.168.6.53:44999/api";//开发
+
+  static const ipAddress = "http://222.72.129.158:44999/api"; //生产
 
   //用户登录
   static const String userLoginUrl = ipAddress + "/Login/CheckLogin";
@@ -42,7 +44,7 @@ class Config {
   //构件查询
   static const String getProjectComponentListUrl =
       ipAddress + "/ProjectFile/GetProjectComponentList";
-  
+
   //构件详细查询
   static const String getComponentDetailUrl =
       ipAddress + "/ProjectFile/GetComponentDetail";
