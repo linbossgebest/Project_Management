@@ -9,7 +9,7 @@ get(String url, {Map<String, dynamic> queryParameters}) async {
     // print(queryParameters["token"]);
     if (queryParameters["token"] == null) {
       Toast.show("用户登录已失效,请重新登录！");
-      Routes.navigatorKey.currentState?.pushNamed("/login");
+      Routes.navigatorKey.currentState?.pushNamedAndRemoveUntil("/login",(route)=>false);
     } else {
       var dio = Dio();
 
@@ -19,7 +19,7 @@ get(String url, {Map<String, dynamic> queryParameters}) async {
         print(response.data);
         if (returnModel.type == 3 || returnModel.message.contains("超时")) {
           Toast.show(returnModel.message);
-          Routes.navigatorKey.currentState?.pushNamed("/login");
+          Routes.navigatorKey.currentState?.pushNamedAndRemoveUntil("/login",(route)=>false);
         } else if (returnModel.type == 1) {
           return response;
         } else {
